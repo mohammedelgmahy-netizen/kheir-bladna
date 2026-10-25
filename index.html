@@ -926,4 +926,15 @@ renderAll();start();
 })();
 </script>
 
+<style>#installBtn{position:fixed;z-index:9999;left:max(12px,env(safe-area-inset-left,0px));bottom:calc(84px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:8px;padding:12px 18px;border:0;border-radius:999px;background:#c08a2e;color:#1a1406;font:600 15px system-ui,sans-serif;box-shadow:0 8px 24px -8px rgba(0,0,0,.5);cursor:pointer}#installBtn[hidden]{display:none!important}@media (min-width:900px){#installBtn{bottom:24px}}</style>
+<button id="installBtn" hidden>⬇ تثبيت البرنامج</button>
+<script>
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
+(function () {
+  let evt = null; const b = document.getElementById("installBtn");
+  window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); evt = e; b.hidden = false; });
+  b.addEventListener("click", async () => { if (!evt) return; evt.prompt(); try { await evt.userChoice; } catch (e) {} evt = null; b.hidden = true; });
+  window.addEventListener("appinstalled", () => { b.hidden = true; });
+})();
+</script>
 </body></html>
