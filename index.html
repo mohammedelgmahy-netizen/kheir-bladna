@@ -1,31 +1,24 @@
 <!doctype html>
 <html lang="ar" dir="rtl"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#4c7426"><meta name="mobile-web-app-capable" content="yes"><link rel="manifest" href="manifest.json"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
-<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<meta name="theme-color" content="#0f1511"><meta name="mobile-web-app-capable" content="yes"><link rel="manifest" href="manifest.json"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
+<style>:root{color-scheme:dark;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
 </head><body>
 <title>كاشير خير بلدنا</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Readex+Pro:wght@500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Tajawal:wght@400;500;700;800&display=swap">
 <style>
 /* Layout: a till counter. Shelf of products on the right, the receipt-like cart on the left; stacks on phones. */
 :root{
-  /* brand: KB logo, olive green #66883e + lime leaf #b6fd41 */
-  --bg:#f4f6ef; --surface:#ffffff; --sunk:#e9eddf; --line:#d6dcc9;
-  --fg:#1d2516; --muted:#5f6a52; --accent:#4c7426; --accent-fg:#ffffff; --accent-soft:#e7f6cc; --lime:#b6fd41;
-  --warn:#a85a00; --warn-soft:#fbecd6; --bad:#b3261e; --bad-soft:#f8dedb; --paper:#fffffa;
-  --f-display:"Readex Pro","IBM Plex Sans Arabic",Tahoma,sans-serif;
-  --f-body:"IBM Plex Sans Arabic",Tahoma,"Segoe UI",sans-serif;
+  /* ليلي: dark night theme picked by the owner (2026-10-25); brand lime from the KB logo */
+  color-scheme:dark;
+  --bg:#0f1511; --surface:#18211a; --sunk:#111a13; --line:#26332a;
+  --fg:#e8f2e4; --muted:#93a38d; --accent:#9be15d; --accent-fg:#0f1511; --accent-soft:#22361b; --lime:#b6fd41;
+  --warn:#e8a54a; --warn-soft:#3a2c17; --bad:#f08a80; --bad-soft:#3b1d1a; --paper:#18211a;
+  --f-display:"Tajawal","IBM Plex Sans Arabic",Tahoma,sans-serif;
+  --f-body:"Tajawal","IBM Plex Sans Arabic",Tahoma,"Segoe UI",sans-serif;
   --r:10px;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#11160d; --surface:#1a2114; --sunk:#232c1b; --line:#323d27;
-  --fg:#e8eedf; --muted:#9aa78b; --accent:#a6e443; --accent-fg:#142008; --accent-soft:#2a3a17; --lime:#b6fd41;
-  --warn:#e8a54a; --warn-soft:#3a2c17; --bad:#f08a80; --bad-soft:#3b1d1a; --paper:#1c2416; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#11160d; --surface:#1a2114; --sunk:#232c1b; --line:#323d27;
-  --fg:#e8eedf; --muted:#9aa78b; --accent:#a6e443; --accent-fg:#142008; --accent-soft:#2a3a17; --lime:#b6fd41;
-  --warn:#e8a54a; --warn-soft:#3a2c17; --bad:#f08a80; --bad-soft:#3b1d1a; --paper:#1c2416; color-scheme:dark}
 *{box-sizing:border-box}
 html,body{min-height:100%}
 body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.55;
@@ -58,7 +51,7 @@ nav{display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);
 nav button{display:flex;align-items:center;gap:7px;border:0;background:transparent;padding:8px 15px;border-radius:999px;white-space:nowrap;color:var(--muted);font-weight:500;transition:background .2s,color .2s}
 nav button svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
 nav button:hover{color:var(--fg)}
-nav button[aria-current="true"]{background:var(--accent);color:#fff;font-weight:600;box-shadow:0 2px 8px rgb(76 116 38/.3)}
+nav button[aria-current="true"]{background:var(--accent);color:var(--accent-fg);font-weight:600;box-shadow:0 2px 10px rgb(155 225 93/.25)}
 /* Phones: a bottom tab bar like a native app */
 @media (max-width:760px){
   body{padding-bottom:calc(76px + env(safe-area-inset-bottom))}
