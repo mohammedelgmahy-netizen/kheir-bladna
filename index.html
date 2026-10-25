@@ -235,7 +235,7 @@ form.add .field{padding:8px 10px}
       <div class="grp" data-admin>الرئيسية</div>
       <button data-tab="home" data-admin><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 4l9 7M5 10v10h5v-6h4v6h5V10"/></svg><span>الرئيسية</span></button>
       <div class="grp">البيع والمخزون</div>
-      <button data-tab="pos" aria-current="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.4 10.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6.2M9.5 20a1 1 0 1 0 0-.01M17.5 20a1 1 0 1 0 0-.01"/></svg><span>البيع</span></button>
+      <button data-tab="pos"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.4 10.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6.2M9.5 20a1 1 0 1 0 0-.01M17.5 20a1 1 0 1 0 0-.01"/></svg><span>البيع</span></button>
       <button data-tab="stock" data-admin><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 8 12 3 3 8v8l9 5 9-5zM3 8l9 5 9-5M12 13v8"/></svg><span>المخزون والمشتريات</span></button>
       <div class="grp" data-admin>الحسابات</div>
       <button data-tab="acct" data-k="customer" data-admin><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 20v-1a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v1M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M22 20v-1a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg><span>العملاء</span></button>
@@ -255,7 +255,7 @@ form.add .field{padding:8px 10px}
   <div class="main">
   <header>
     <button class="menu" id="menuBtn" aria-label="القائمة"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
-    <div class="ttl"><b id="pgTitle">البيع</b><small id="crumb">خير بلدنا · البيع</small></div>
+    <div class="ttl"><b id="pgTitle">الرئيسية</b><small id="crumb">خير بلدنا</small></div>
     <span class="datechip"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v16H4zM4 9h16M8 3v4M16 3v4"/></svg><span id="clock"></span></span>
   </header>
   <div class="banner" id="demoBanner" hidden>
@@ -274,7 +274,7 @@ form.add .field{padding:8px 10px}
     </div>
   </section>
 
-  <section id="v-pos">
+  <section id="v-pos" hidden>
     <div class="pos">
       <div>
         <div class="toolbar">
@@ -569,7 +569,7 @@ function toast(t){const d=document.createElement('div');d.className='toast';d.te
 const catClass=c=>c==='خضار'?'veg':c==='فاكهة'?'fruit':c==='ورقيات'?'leaf':'';
 
 /* tabs */
-let tab='pos';
+let tab='home';
 const TITLE={home:'الرئيسية',pos:'البيع',stock:'المخزون والمشتريات',report:'التقارير',acct:'الحسابات',settings:'الإعدادات'};
 function nav(b){if(b.dataset.k)acctKind=b.dataset.k;if(b.dataset.m)repMode=b.dataset.m;show(b.dataset.go||b.dataset.tab)}
 $('#tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.hasAttribute('data-out'))return $('#logout').click();nav(b)});
