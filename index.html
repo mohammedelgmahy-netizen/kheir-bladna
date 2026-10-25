@@ -13,7 +13,7 @@
   /* كريمي (2026-10-25): logo olive #66883e and lime #b6fd41 on a warm cream background */
   color-scheme:light;
   --bg:#f8f5ea; --surface:#fffdf7; --sunk:#f5f1e3; --line:#e7e0cc;
-  --fg:#1f2a17; --muted:#6c7a60; --accent:#557a2f; --accent-fg:#fff; --accent-soft:#eaf2dc; --accent-ink:#4a6b28; --lime:#8cc63f;
+  --fg:#141c0e; --muted:#4b5641; --accent:#557a2f; --accent-fg:#fff; --accent-soft:#eaf2dc; --accent-ink:#4a6b28; --lime:#8cc63f;
   --warn:#b7791f; --warn-soft:#fbf0dc; --bad:#c0392b; --bad-soft:#fbe5e2; --ok:#1f9d55; --ok-soft:#e1f5e9; --paper:#fffdf7;
   --side:#fffdf7; --side-fg:var(--fg); --top:linear-gradient(90deg,#34501c,#4c6b2a); --top-fg:#fff; --top-line:rgb(255 255 255/.4);
   --hero:linear-gradient(135deg,#66883e,#3d5a20); --hero-fg:#fff; --gold:#b6fd41; --mark:#8cc63f;
@@ -23,7 +23,7 @@
 }
 *{box-sizing:border-box}
 html,body{min-height:100%}
-body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.55;margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:16.5px;font-weight:500;line-height:1.55;margin:0}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
 .num{font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate}
 button,input,select{font:inherit;color:inherit}
@@ -31,25 +31,25 @@ button{cursor:pointer}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .wrap{max-width:1240px;margin:0 auto}
 header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px;padding-block:14px;border-bottom:1px solid var(--line);margin-bottom:16px}
-.brand{font-family:var(--f-display);font-weight:700;font-size:20px;display:flex;align-items:baseline;gap:10px}
-.brand small{font-family:var(--f-body);font-weight:400;font-size:13px;color:var(--muted)}
+.brand{font-family:var(--f-display);font-weight:700;font-size:22px;display:flex;align-items:baseline;gap:10px}
+.brand small{font-family:var(--f-body);font-weight:400;font-size:14.5px;color:var(--muted)}
 .sums>span:nth-child(even){padding-inline-start:12px}
 @media (max-width:520px){.brand small{display:none}}
 .logo{width:46px;height:46px;border-radius:10px;background:#fff;object-fit:contain;padding:3px;border:1px solid var(--line);align-self:center}
 .receipt .logo{width:72px;height:72px;margin:0 auto 6px;display:block;border:0}
-.unit{font-size:12.5px;color:var(--muted);font-family:var(--f-body)}
+.unit{font-size:14px;color:var(--muted);font-family:var(--f-body)}
 .wqty{border:1px dashed var(--accent);background:var(--accent-soft);color:var(--fg);border-radius:999px;padding:3px 12px;font-weight:600}
 .presets{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
 .presets button{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:8px}
-.big{font-size:26px;text-align:center;width:100%;font-family:var(--f-display)}
+.big{font-size:28px;text-align:center;width:100%;font-family:var(--f-display)}
 .quick{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
-.quick button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:3px 12px;font-size:13.5px}
+.quick button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:3px 12px;font-size:15px}
 .prod .cat{height:4px;border-radius:2px;margin-bottom:6px;background:var(--line)}
 .prod .cat.veg{background:var(--accent)}
 .prod .cat.fruit{background:var(--lime)}
 .prod .cat.leaf{background:#3f9b6b}
-.banner{background:var(--warn-soft);color:var(--warn);border-radius:var(--r);padding:8px 14px;margin-bottom:14px;font-size:14px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
-.banner button{background:transparent;border:1px solid currentColor;color:inherit;border-radius:999px;padding:2px 12px;font-size:13px}
+.banner{background:var(--warn-soft);color:var(--warn);border-radius:var(--r);padding:8px 14px;margin-bottom:14px;font-size:15.5px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.banner button{background:transparent;border:1px solid currentColor;color:inherit;border-radius:999px;padding:2px 12px;font-size:14.5px}
 
 /* POS */
 .pos{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:16px;align-items:start}
@@ -58,7 +58,7 @@ header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var
 .field{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:9px 12px;min-width:0}
 .toolbar .field{flex:1 1 220px}
 .chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
-.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 12px;font-size:14px;color:var(--muted)}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 12px;font-size:15.5px;color:var(--muted)}
 .chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
 .prod{display:flex;flex-direction:column;gap:2px;text-align:start;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px;transition:border-color .15s,transform .1s}
@@ -66,28 +66,28 @@ header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var
 .prod:active{transform:scale(.98)}
 .prod:disabled{opacity:.45;cursor:not-allowed}
 .prod b{font-weight:600}
-.prod .meta{font-size:12.5px;color:var(--muted)}
-.prod .price{font-family:var(--f-display);font-size:17px;margin-top:6px;color:var(--accent)}
+.prod .meta{font-size:14px;color:var(--muted)}
+.prod .price{font-family:var(--f-display);font-size:19px;margin-top:6px;color:var(--accent)}
 .stock-low{color:var(--warn)!important}
 .stock-out{color:var(--bad)!important}
 
 .cart{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:16px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 76px)}
-.cart h2{font-family:var(--f-display);font-size:17px;margin:0 0 10px;display:flex;justify-content:space-between;align-items:baseline}
-.cart h2 span{font-family:var(--f-body);font-size:13px;color:var(--muted);font-weight:400}
+.cart h2{font-family:var(--f-display);font-size:19px;margin:0 0 10px;display:flex;justify-content:space-between;align-items:baseline}
+.cart h2 span{font-family:var(--f-body);font-size:14.5px;color:var(--muted);font-weight:400}
 .lines{display:flex;flex-direction:column;max-height:44vh;overflow:auto;border-block:1px dashed var(--line)}
 .line{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)}
 .line:last-child{border-bottom:0}
 .line .nm{min-width:0}
-.line .nm div{font-size:12.5px;color:var(--muted)}
+.line .nm div{font-size:14px;color:var(--muted)}
 .qty{display:flex;align-items:center;gap:2px;background:var(--sunk);border-radius:999px;padding:2px}
 .qty button{width:28px;height:28px;border:0;border-radius:50%;background:var(--surface);font-weight:700;line-height:1}
 .qty span{min-width:24px;text-align:center}
 .line .tot{min-width:70px;text-align:end;font-weight:600}
-.empty{color:var(--muted);text-align:center;padding:28px 8px;font-size:14px}
-.sums{display:grid;grid-template-columns:1fr auto;gap:4px 0;margin-top:12px;font-size:14px}
-.sums .grand{font-family:var(--f-display);font-size:22px;font-weight:700;padding-top:6px;border-top:1px solid var(--line);margin-top:4px}
+.empty{color:var(--muted);text-align:center;padding:28px 8px;font-size:15.5px}
+.sums{display:grid;grid-template-columns:1fr auto;gap:4px 0;margin-top:12px;font-size:15.5px}
+.sums .grand{font-family:var(--f-display);font-size:24px;font-weight:700;padding-top:6px;border-top:1px solid var(--line);margin-top:4px}
 .row{display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap}
-.row label{font-size:13.5px;color:var(--muted)}
+.row label{font-size:15px;color:var(--muted)}
 .row .field{flex:1;padding:7px 10px}
 .seg{display:flex;background:var(--sunk);border-radius:var(--r);padding:3px;gap:3px;flex:1}
 .seg button{flex:1;border:0;background:transparent;border-radius:8px;padding:6px;color:var(--muted)}
@@ -96,88 +96,88 @@ header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var
 .btn.primary{background:var(--accent);color:var(--accent-fg)}
 .btn.danger{background:var(--bad-soft);color:var(--bad)}
 .btn:disabled{opacity:.5;cursor:not-allowed}
-.pay{width:100%;margin-top:12px;font-size:17px;padding:13px}
-.change{font-size:14px;color:var(--muted);margin-top:6px;min-height:1.5em}
+.pay{width:100%;margin-top:12px;font-size:19px;padding:13px}
+.change{font-size:15.5px;color:var(--muted);margin-top:6px;min-height:1.5em}
 .change b{color:var(--accent)}
 .change .bad{color:var(--bad)}
 
 /* tables */
-section h1{font-family:var(--f-display);font-size:22px;margin:0 0 4px;text-wrap:balance}
-section .sub{color:var(--muted);margin:0 0 16px;font-size:14px}
+section h1{font-family:var(--f-display);font-size:24px;margin:0 0 4px;text-wrap:balance}
+section .sub{color:var(--muted);margin:0 0 16px;font-size:15.5px}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
 .tbl-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:14px}
+table{width:100%;border-collapse:collapse;font-size:15.5px}
 th,td{padding:9px 12px;text-align:start;border-bottom:1px solid var(--line);white-space:nowrap}
-th{font-weight:500;color:var(--muted);font-size:13px;background:var(--sunk)}
+th{font-weight:500;color:var(--muted);font-size:14.5px;background:var(--sunk)}
 tr:last-child td{border-bottom:0}
 td.act{text-align:end}
 .link{background:none;border:0;color:var(--accent);padding:2px 6px;font-weight:500}
 .link.del{color:var(--bad)}
-.pill{display:inline-block;border-radius:999px;padding:1px 10px;font-size:12.5px;background:var(--accent-soft);color:var(--accent)}
+.pill{display:inline-block;border-radius:999px;padding:1px 10px;font-size:14px;background:var(--accent-soft);color:var(--accent)}
 .pill.low{background:var(--warn-soft);color:var(--warn)}
 .pill.out{background:var(--bad-soft);color:var(--bad)}
 form.add{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;padding:14px;margin-bottom:14px;align-items:end}
-form.add label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}
+form.add label{display:flex;flex-direction:column;gap:4px;font-size:14.5px;color:var(--muted)}
 form.add .field{padding:8px 10px}
 
 .kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:16px}
 .kpi{padding:14px}
-.kpi div{font-size:13px;color:var(--muted)}
-.kpi strong{font-family:var(--f-display);font-size:24px;display:block;margin-top:2px}
+.kpi div{font-size:14.5px;color:var(--muted)}
+.kpi strong{font-family:var(--f-display);font-size:26px;display:block;margin-top:2px}
 .two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
 @media (max-width:760px){.two{grid-template-columns:minmax(0,1fr)}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
-.card h3{font-size:15px;margin:0;padding:12px 14px;border-bottom:1px solid var(--line)}
+.card h3{font-size:16.5px;margin:0;padding:12px 14px;border-bottom:1px solid var(--line)}
 .bar{height:6px;background:var(--sunk);border-radius:3px;margin-top:4px}
 .bar i{display:block;height:100%;background:var(--accent);border-radius:3px}
 
 .settings{display:grid;gap:12px;max-width:520px;padding:16px}
-.settings label{display:flex;flex-direction:column;gap:4px;font-size:13.5px;color:var(--muted)}
+.settings label{display:flex;flex-direction:column;gap:4px;font-size:15px;color:var(--muted)}
 
 /* receipt dialog */
 .overlay{position:fixed;inset:0;background:rgb(10 15 12/.55);display:grid;place-items:center;padding:20px;z-index:20}
 .receipt{background:var(--paper);color:var(--fg);width:min(360px,100%);border-radius:6px;padding:22px 20px;max-height:90vh;overflow:auto;box-shadow:0 10px 40px rgb(0 0 0/.3)}
 .receipt .hd{text-align:center;border-bottom:1px dashed var(--line);padding-bottom:10px;margin-bottom:8px}
-.receipt .hd b{font-family:var(--f-display);font-size:19px;display:block}
-.receipt .hd div{font-size:12.5px;color:var(--muted)}
-.receipt table{font-size:13.5px}
+.receipt .hd b{font-family:var(--f-display);font-size:21px;display:block}
+.receipt .hd div{font-size:14px;color:var(--muted)}
+.receipt table{font-size:15px}
 .receipt td,.receipt th{padding:4px 2px;border:0;background:none}
 .receipt .ft{border-top:1px dashed var(--line);margin-top:8px;padding-top:8px}
-.receipt .thanks{text-align:center;font-size:13px;color:var(--muted);margin-top:12px}
+.receipt .thanks{text-align:center;font-size:14.5px;color:var(--muted);margin-top:12px}
 .receipt .acts{display:flex;gap:8px;margin-top:16px}
 .receipt .acts .btn{flex:1;text-align:center;text-decoration:none;color:inherit}
 .receipt .acts .btn.primary{color:var(--accent-fg)}
 .share{border-top:1px dashed var(--line);margin-top:14px;padding-top:12px;display:grid;gap:8px}
-.share label{font-size:13px;color:var(--muted)}
+.share label{font-size:14.5px;color:var(--muted)}
 .share .field{padding:8px 10px;width:100%}
 .wa{background:#1f8f4e;color:#fff!important}
 .btn.wa{white-space:nowrap}
 #staffList li{display:flex;justify-content:space-between;align-items:center;gap:8px;border-bottom:1px dashed var(--line);padding:4px 0}
-.toast{position:fixed;bottom:calc(16px + env(safe-area-inset-bottom,0px));inset-inline-start:50%;transform:translateX(50%);background:var(--fg);color:var(--bg);padding:8px 16px;border-radius:999px;font-size:14px;z-index:30}
+.toast{position:fixed;bottom:calc(16px + env(safe-area-inset-bottom,0px));inset-inline-start:50%;transform:translateX(50%);background:var(--fg);color:var(--bg);padding:8px 16px;border-radius:999px;font-size:15.5px;z-index:30}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 /* Shell: a fixed side menu (right, RTL) with grouped links, like an office back-end; a drawer on phones */
 .shell{display:grid;grid-template-columns:268px minmax(0,1fr);min-height:100vh}
 #side{position:sticky;top:0;height:100vh;overflow-y:auto;background:var(--side);color:var(--side-fg);border-inline-end:1px solid var(--line);display:flex;flex-direction:column;padding:16px 12px calc(12px + env(safe-area-inset-bottom,0px));z-index:25}
 .sbrand{display:flex;align-items:center;gap:10px;padding:2px 6px 16px;border-bottom:1px solid var(--line);margin-bottom:8px}
 .sbrand .logo{width:44px;height:44px}
-.sbrand b{display:block;font-family:var(--f-display);font-size:16px;line-height:1.3}
-.sbrand small{font-size:12px;color:var(--muted)}
+.sbrand b{display:block;font-family:var(--f-display);font-size:18px;line-height:1.3}
+.sbrand small{font-size:13.5px;color:var(--muted)}
 #tabs{display:flex;flex-direction:column;gap:2px;flex:1}
-#tabs .grp{font-size:12px;color:var(--muted);padding:12px 10px 4px;font-weight:500}
+#tabs .grp{font-size:13.5px;color:var(--muted);padding:12px 10px 4px;font-weight:500}
 #tabs button{display:flex;align-items:center;gap:12px;border:0;background:transparent;color:inherit;padding:9px 12px;border-radius:10px;font-weight:500;text-align:start;position:relative;transition:background .15s}
 #tabs button svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none;opacity:.75}
 #tabs button:hover{background:var(--sunk)}
 #tabs button[aria-current="true"]{background:var(--accent-soft);color:var(--accent-ink);font-weight:700}
 #tabs button[aria-current="true"] svg{opacity:1}
 #tabs button[aria-current="true"]::before{content:"";position:absolute;inset-inline-start:-12px;top:8px;bottom:8px;width:4px;border-radius:0 4px 4px 0;background:var(--accent)}
-.sfoot{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);padding:12px 8px 0;border-top:1px solid var(--line);margin-top:10px}
+.sfoot{display:flex;align-items:center;gap:6px;font-size:13.5px;color:var(--muted);padding:12px 8px 0;border-top:1px solid var(--line);margin-top:10px}
 .sfoot i{width:8px;height:8px;border-radius:50%;background:#2fbf71;flex:none}
 .sfoot #sync[data-s="err"]{color:var(--bad)}
 .main{min-width:0;padding:0 max(18px,env(safe-area-inset-left,0px)) 28px max(18px,env(safe-area-inset-right,0px))}
 .main>header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;align-items:center;gap:12px;margin:0 calc(-1*max(18px,env(safe-area-inset-left,0px))) 18px;padding:12px 18px;background:var(--top);color:var(--top-fg);border-bottom:1px solid var(--line)}
 .main>header .ttl{flex:1;min-width:0}
-.main>header .ttl b{display:block;font-family:var(--f-display);font-size:19px;line-height:1.3}
-.main>header .ttl small{font-size:12px;opacity:.75}
-.datechip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--top-line);border-radius:10px;padding:5px 10px;font-size:13px;white-space:nowrap}
+.main>header .ttl b{display:block;font-family:var(--f-display);font-size:21px;line-height:1.3}
+.main>header .ttl small{font-size:13.5px;opacity:.75}
+.datechip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--top-line);border-radius:10px;padding:5px 10px;font-size:14.5px;white-space:nowrap}
 .datechip svg,.menu svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .menu{display:none;border:1px solid var(--top-line);background:transparent;color:inherit;border-radius:10px;padding:7px 8px;line-height:0}
 .menu svg{width:21px;height:21px}
@@ -193,10 +193,10 @@ form.add .field{padding:8px 10px}
 }
 /* Home dashboard */
 .hero{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;background:var(--hero);color:var(--hero-fg);border-radius:16px;padding:22px;margin-bottom:14px;box-shadow:0 10px 30px -14px rgb(0 0 0/.45)}
-.hero b{display:block;font-family:var(--f-display);font-size:22px}
-.hero small{opacity:.8;font-size:13px}
+.hero b{display:block;font-family:var(--f-display);font-size:24px}
+.hero small{opacity:.8;font-size:14.5px}
 .hsum{text-align:end}
-.hsum strong{display:block;font-family:var(--f-display);font-size:28px;color:var(--gold);line-height:1.2}
+.hsum strong{display:block;font-family:var(--f-display);font-size:30px;color:var(--gold);line-height:1.2}
 .qa{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
 .qa .btn{border-radius:12px;padding:10px 16px}
 @media (max-width:600px){.qa{display:grid;grid-template-columns:1fr 1fr}}
@@ -208,22 +208,24 @@ form.add .field{padding:8px 10px}
 .dkc .ib svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .dkc .ib.g{background:var(--ok-soft);color:var(--ok)}.dkc .ib.w{background:var(--warn-soft);color:var(--warn)}.dkc .ib.b{background:var(--bad-soft);color:var(--bad)}
 .dkc div{min-width:0}
-.dkc div>span{font-size:13px;color:var(--muted);display:block}
-.dkc strong{font-family:var(--f-display);font-size:21px;display:block;line-height:1.35}
-.dkc small{font-size:12px;color:var(--muted)}
+@media (max-width:600px){.dkc{flex-direction:column;gap:8px;padding:14px}.dkc .ib{width:38px;height:38px}}
+.dkc div>span{font-size:14.5px;color:var(--muted);display:block}
+.dkc strong{font-family:var(--f-display);font-size:23px;display:block;line-height:1.35}
+.dkc small{font-size:13.5px;color:var(--muted)}
 .dcard{padding:16px;border-radius:14px}
 .dh{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
-.dh b{font-size:15.5px;border-inline-start:4px solid var(--mark);padding-inline-start:8px}
-.dh small{font-size:12px;color:var(--muted)}
-.lg{display:flex;gap:16px;font-size:12.5px;color:var(--muted);margin-bottom:6px}
+.dh b{font-size:17.5px;border-inline-start:4px solid var(--mark);padding-inline-start:8px}
+.dh small{font-size:13.5px;color:var(--muted)}
+.lg{display:flex;gap:16px;font-size:14px;color:var(--muted);margin-bottom:6px}
 .lg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-inline-end:5px;vertical-align:-1px}
 .lg .s1,#hChart .s1{background:var(--accent);fill:var(--accent)}.lg .s2,#hChart .s2{background:var(--warn);fill:var(--warn)}
 #hChart svg{width:100%;height:auto;display:block}
-#hChart text{fill:var(--muted);font:12px var(--f-body)}
+#hChart text{fill:var(--muted);font:500 14px var(--f-body)}
+#hChart.narrow text{font-size:12.5px}
 #hChart line{stroke:var(--line)}
-.li{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 0;border-bottom:1px dashed var(--line);font-size:14px}
+.li{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 0;border-bottom:1px dashed var(--line);font-size:15.5px}
 .li:last-child{border-bottom:0}
-.li small{color:var(--muted);font-size:12.5px;display:block}
+.li small{color:var(--muted);font-size:14px;display:block}
 </style>
 
 <div class="shell" dir="rtl" lang="ar">
@@ -317,7 +319,7 @@ form.add .field{padding:8px 10px}
     <h1>المنتجات والمخزون</h1>
     <p class="sub">أضف منتجًا جديدًا أو عدّل الأسعار والكميات. المنتج الذي تقل كميته عن حد التنبيه يظهر باللون البرتقالي.</p>
     <form class="add card" id="buyForm" style="margin-bottom:14px">
-      <b style="grid-column:1/-1;font-size:15px">مشتريات (توريد للمخزون)</b>
+      <b style="grid-column:1/-1;font-size:16.5px">مشتريات (توريد للمخزون)</b>
       <label>الصنف<input class="field" id="bProd" list="prodList" required placeholder="اكتب الاسم أو الرمز"></label>
       <label>الكمية المشتراة<input class="field num" id="bQty" type="number" step="0.001" min="0.001" required></label>
       <label>سعر التكلفة للوحدة (اختياري)<input class="field num" id="bCost" type="number" step="0.01" min="0"></label>
@@ -333,7 +335,9 @@ form.add .field{padding:8px 10px}
       <label>وحدة البيع<select class="field" id="pUnit"><option value="kg">بالكيلو</option><option value="pc">بالحبة</option><option value="bunch">بالربطة</option><option value="box">بالعلبة</option><option value="crate">بالصندوق</option><option value="carton">بالكرتونة</option></select></label>
       <label>رمز الصنف (يُكتب تلقائيًا)<input class="field num" id="pCode"></label>
       <label>سعر البيع للوحدة (قطاعي)<input class="field num" id="pPrice" type="number" step="0.01" min="0" required></label>
-      <label>سعر الجملة (اختياري)<input class="field num" id="pWhole" type="number" step="0.01" min="0"></label>
+      <label>وحدة الجملة (اختياري)<select class="field" id="pWhU"><option value="">نفس وحدة القطاعي</option><option value="carton">كرتونة</option><option value="crate">صندوق</option></select></label>
+      <label id="pWhQL" hidden>الكرتونة فيها كام<input class="field num" id="pWhQ" type="number" step="0.001" min="0" inputmode="decimal"></label>
+      <label><span id="pWholeL">سعر الجملة (اختياري)</span><input class="field num" id="pWhole" type="number" step="0.01" min="0"></label>
       <label>سعر التكلفة للوحدة<input class="field num" id="pCost" type="number" step="0.01" min="0" value="0"></label>
       <label>الكمية المتوفرة<input class="field num" id="pStock" type="number" step="0.001" value="0"></label>
       <label>حد التنبيه<input class="field num" id="pMin" type="number" step="0.5" min="0" value="5"></label>
@@ -379,7 +383,7 @@ form.add .field{padding:8px 10px}
         <div style="display:flex;gap:8px;align-items:end"><button class="btn primary" style="flex:1">إضافة مصروف</button></div>
         <datalist id="exCats"></datalist>
       </form>
-      <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px"><span style="color:var(--muted);font-size:14px">الشهر</span><input class="field num" type="month" id="exMonth"></div>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px"><span style="color:var(--muted);font-size:15.5px">الشهر</span><input class="field num" type="month" id="exMonth"></div>
       <div class="card tbl-wrap"><table id="expTbl"></table></div>
     </div>
   </section>
@@ -395,16 +399,16 @@ form.add .field{padding:8px 10px}
       <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary">حفظ</button></div>
     </form>
     <div class="card settings" style="margin-top:14px">
-      <b style="font-size:15px">البيانات</b>
-      <span style="font-size:13.5px;color:var(--muted)">البيانات محفوظة في Supabase باسم <b id="who"></b>، وتظهر على أي جهاز تدخل منه.</span>
+      <b style="font-size:16.5px">البيانات</b>
+      <span style="font-size:15px;color:var(--muted)">البيانات محفوظة في Supabase باسم <b id="who"></b>، وتظهر على أي جهاز تدخل منه.</span>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <span id="dataBtns" style="display:contents"><button class="btn" id="loadDemo">تحميل بيانات تجريبية</button></span>
         <button class="btn" id="logout">تسجيل الخروج</button>
       </div>
     </div>
     <div class="card settings" id="staffCard" style="margin-top:14px">
-      <b style="font-size:15px">الكاشيرية والمديرين</b>
-      <span style="font-size:13.5px;color:var(--muted)">اختار كاشير أو مدير، واكتب رقم الموبايل أو الإيميل وباسورد. يدخل البرنامج بيهم على طول. المدير يقدر يعمل كل حاجة زيك. الكاشير يبيع فقط، ولا يرى المنتجات ولا التقارير ولا الإعدادات.</span>
+      <b style="font-size:16.5px">الكاشيرية والمديرين</b>
+      <span style="font-size:15px;color:var(--muted)">اختار كاشير أو مدير، واكتب رقم الموبايل أو الإيميل وباسورد. يدخل البرنامج بيهم على طول. المدير يقدر يعمل كل حاجة زيك. الكاشير يبيع فقط، ولا يرى المنتجات ولا التقارير ولا الإعدادات.</span>
       <form id="staffForm" style="display:flex;gap:8px;flex-wrap:wrap"><select class="field" id="staffRole" style="flex:0 0 auto"><option value="cashier">كاشير</option><option value="manager">مدير (صلاحيات كاملة)</option></select><input class="field num" id="staffMail" type="text" required placeholder="رقم الموبايل أو الإيميل" style="flex:1;min-width:160px"><input class="field num" id="staffPass" type="text" required minlength="6" placeholder="باسورد (6 على الأقل)" style="flex:1;min-width:140px"><button class="btn primary">إضافة</button></form>
       <ul id="staffList" style="list-style:none;margin:0;padding:0;display:grid;gap:6px"></ul>
     </div>
@@ -490,7 +494,8 @@ let sb=null,ownerId=null,myEmail='',role='admin',staff=[],staffRole={},isOwner=t
 const isAdmin=()=>role==='admin';
 const synced={products:{},sales:new Set(),settings:'',parties:{},ledger:new Set(),expenses:new Set()};
 let moreOk=false; // more.sql has been run (wholesale, expenses, partners)
-const pRow=p=>({id:p.id,owner:ownerId,name:p.name,cat:p.cat,unit:p.unit,code:p.code||null,price:p.price,cost:p.cost,stock:p.stock,min:p.min,...(moreOk?{wholesale:p.wholesale??null}:{})});
+let cartonOk=false; // carton.sql has been run (wholesale by carton/crate)
+const pRow=p=>({id:p.id,owner:ownerId,name:p.name,cat:p.cat,unit:p.unit,code:p.code||null,price:p.price,cost:p.cost,stock:p.stock,min:p.min,...(moreOk?{wholesale:p.wholesale??null}:{}),...(cartonOk?{wh_unit:p.whUnit||null,wh_qty:p.whQty||null}:{})});
 const exRow=x=>({id:x.id,owner:ownerId,ts:new Date(x.ts).toISOString(),cat:x.cat,amount:x.amount,note:x.note||null});
 const sRow=s=>({id:s.id,owner:ownerId,no:s.no,ts:new Date(s.ts).toISOString(),method:s.method,subtotal:s.subtotal,discount:s.discount,tax:s.tax,total:s.total,paid:s.paid,change:s.change,items:s.items,...(s.party?{party:s.party}:{}),...(s.wholesale?{wholesale:true}:{})});
 const ptRow=p=>({id:p.id,owner:ownerId,kind:p.kind,name:p.name,phone:p.phone||null,opening:p.opening||0});
@@ -501,9 +506,10 @@ const must=r=>{if(r.error)throw r.error;return r.data};
 async function loadRemote(){
   const [p,s,st]=await Promise.all([sb.from('products').select('*').eq('owner',ownerId),sb.from('sales').select('*').eq('owner',ownerId).order('ts'),sb.from('settings').select('*').eq('owner',ownerId).maybeSingle()]);
   S=fresh(false);
-  S.products=must(p).map(r=>({id:r.id,name:r.name,cat:r.cat,unit:r.unit,code:r.code||'',price:+r.price,cost:+r.cost,stock:+r.stock,min:+r.min,wholesale:r.wholesale==null?null:+r.wholesale}));
+  S.products=must(p).map(r=>({id:r.id,name:r.name,cat:r.cat,unit:r.unit,code:r.code||'',price:+r.price,cost:+r.cost,stock:+r.stock,min:+r.min,wholesale:r.wholesale==null?null:+r.wholesale,whUnit:r.wh_unit||'',whQty:r.wh_qty==null?0:+r.wh_qty}));
   S.sales=must(s).map(r=>({id:r.id,no:r.no,ts:Date.parse(r.ts),method:r.method,subtotal:+r.subtotal,discount:+r.discount,tax:+r.tax,total:+r.total,paid:+r.paid,change:+r.change,items:r.items,party:r.party||null,wholesale:!!r.wholesale}));
   moreOk=!(await sb.from('products').select('wholesale').limit(1)).error;
+  cartonOk=!(await sb.from('products').select('wh_qty').limit(1)).error;
   if(moreOk&&isAdmin())try{S.expenses=must(await sb.from('expenses').select('*').eq('owner',ownerId).order('ts')).map(r=>({id:r.id,ts:Date.parse(r.ts),cat:r.cat,amount:+r.amount,note:r.note||''}))}catch(e){S.expenses=[]}
   // Accounts tables may not exist yet (accounts.sql not run); the rest of the app still works.
   try{const [a,b]=await Promise.all([sb.from('parties').select('*').eq('owner',ownerId),isAdmin()?sb.from('ledger').select('*').eq('owner',ownerId).order('ts'):{data:[]}]);
@@ -578,18 +584,24 @@ function show(t){tab=t;side(false);
 /* POS */
 let cart=[],cat='الكل',method='cash',editing=null,priceMode='retail';
 const priceOf=p=>priceMode==='whole'&&p.wholesale>0?p.wholesale:p.price;
+// Wholesale by carton: the line counts cartons, stock moves by the carton's content in the retail unit.
+const byCarton=p=>priceMode==='whole'&&!!p.whUnit&&p.whQty>0;
+const perOf=p=>byCarton(p)?p.whQty:1;
+const unitOf=p=>byCarton(p)?p.whUnit:p.unit;
+const baseQ=l=>l.qty*(l.per||1);
 const cats=()=>['الكل',...new Set(S.products.map(p=>p.cat))];
-const inCart=id=>(cart.find(l=>l.pid===id)||{}).qty||0;
+const lineQ=id=>(cart.find(l=>l.pid===id)||{}).qty||0;
+const inCart=id=>{const l=cart.find(x=>x.pid===id);return l?baseQ(l):0};
 function stockClass(left,min){return left<=0?'stock-out':left<=min?'stock-low':''}
 function renderPOS(){
   $('#cats').innerHTML=cats().map(c=>`<button class="chip" aria-pressed="${c===cat}" data-c="${esc(c)}">${esc(c)}</button>`).join('');
   const q=$('#search').value.trim();
   const list=S.products.filter(p=>(cat==='الكل'||p.cat===cat)&&(!q||p.name.includes(q)||String(p.code||'').includes(q)));
   $('#prodGrid').innerHTML=list.length?list.map(p=>{const left=round(p.stock-inCart(p.id),3);
-    return `<button class="prod" data-id="${p.id}" ${left<=0?'disabled':''}><span class="cat ${catClass(p.cat)}"></span><b>${esc(p.name)}</b><span class="meta ${stockClass(left,p.min)}">${left<=0?'نفدت الكمية':'المتوفر: '+fq(left,p.unit)}</span><span class="price">${M(priceOf(p))} <span class="unit">/ ${UNITS[p.unit]}</span></span></button>`}).join('')
+    return `<button class="prod" data-id="${p.id}" ${left<=0?'disabled':''}><span class="cat ${catClass(p.cat)}"></span><b>${esc(p.name)}</b><span class="meta ${stockClass(left,p.min)}">${left<=0?'نفدت الكمية':'المتوفر: '+fq(left,p.unit)}</span><span class="price">${M(priceOf(p))} <span class="unit">/ ${byCarton(p)?UNITS[p.whUnit]+' ('+fq(p.whQty,p.unit)+')':UNITS[p.unit]}</span></span></button>`}).join('')
     :`<div class="empty" style="grid-column:1/-1">${S.products.length?'لا توجد أصناف مطابقة.':'لا توجد أصناف بعد. أضفها من تبويب المنتجات والمخزون.'}</div>`;
   $('#invNo').innerHTML='رقم <span class="num">'+S.next+'</span>';
-  $('#lines').innerHTML=cart.length?cart.map(l=>`<div class="line"><div class="nm"><b>${esc(l.name)}</b><div>${M(l.price)} / ${UNITS[l.unit]}</div></div>
+  $('#lines').innerHTML=cart.length?cart.map(l=>`<div class="line"><div class="nm"><b>${esc(l.name)}</b><div>${M(l.price)} / ${UNITS[l.unit]}${l.base?' ('+fq(l.per,l.base)+')':''}</div></div>
     ${l.unit==='kg'?`<button class="wqty" data-w="${l.pid}" aria-label="تعديل الوزن">${fq(l.qty,'kg')}</button>`:
     `<div class="qty"><button data-inc="${l.pid}" aria-label="زيادة">+</button><span class="num">${l.qty}</span><button data-dec="${l.pid}" aria-label="إنقاص">−</button></div>`}
     <div class="tot">${M(lineTotal(l))}</div></div>`).join(''):'<div class="empty">اضغط على صنف لإضافته. الأصناف التي تُباع بالكيلو تطلب الوزن.</div>';
@@ -614,20 +626,20 @@ function renderPOS(){
 }
 function setQty(id,qty){
   const p=S.products.find(x=>x.id===id);if(!p)return;
-  qty=round(qty,3);
-  if(qty>p.stock+1e-9){toast('المتوفر من '+p.name+' '+round(p.stock,3)+' '+UNITS[p.unit]+' فقط');return false}
+  qty=round(qty,3);const per=perOf(p);
+  if(qty*per>p.stock+1e-9){toast('المتوفر من '+p.name+' '+round(p.stock,3)+' '+UNITS[p.unit]+' فقط');return false}
   const l=cart.find(x=>x.pid===id);
   if(qty<=0){cart=cart.filter(x=>x.pid!==id)}
-  else if(l)l.qty=qty;else cart.push({pid:p.id,name:p.name,unit:p.unit,price:priceOf(p),cost:p.cost,qty});
+  else if(l)l.qty=qty;else cart.push({pid:p.id,name:p.name,unit:unitOf(p),price:priceOf(p),cost:round(p.cost*per,4),qty,...(byCarton(p)?{per,base:p.unit}:{})});
   renderPOS();return true;
 }
 function addToCart(id){const p=S.products.find(x=>x.id===id);if(!p)return;
-  if(byWeight(p))weighDialog(p);else setQty(id,inCart(id)+1)}
+  if(byWeight(p)&&!byCarton(p))weighDialog(p);else setQty(id,lineQ(id)+1)}
 function weighDialog(p){
   const existing=cart.find(l=>l.pid===p.id);
   $('#modal').innerHTML=`<div class="overlay" id="ov"><form class="receipt" id="wForm" role="dialog" aria-label="الوزن" dir="rtl">
     <div class="hd"><b>${esc(p.name)}</b><div>${M(priceOf(p))} للكيلو · المتوفر ${fq(p.stock,'kg')}</div></div>
-    <label for="wIn" style="font-size:13.5px;color:var(--muted)">الوزن بالكيلو</label>
+    <label for="wIn" style="font-size:15px;color:var(--muted)">الوزن بالكيلو</label>
     <input class="field num big" id="wIn" type="number" step="0.005" min="0" inputmode="decimal" value="${existing?existing.qty:''}" placeholder="0.000">
     <div class="presets">${[0.25,0.5,0.75,1,1.5,2,3,5].map(v=>`<button type="button" data-v="${v}"><span class="num">${v}</span> كجم</button>`).join('')}<button type="button" data-v="0" style="color:var(--bad)">${existing?'حذف':'مسح'}</button></div>
     <div class="sums" style="margin-top:12px"><span class="grand">السعر</span><span class="grand" id="wTot">${M(0)}</span></div>
@@ -648,11 +660,12 @@ $('#search').addEventListener('keydown',e=>{if(e.key!=='Enter')return;const q=e.
   const p=S.products.find(x=>String(x.code)===q)||(()=>{const m=S.products.filter(x=>x.name.includes(q));return m.length===1?m[0]:null})();
   if(p){e.target.value='';renderPOS();addToCart(p.id)}else toast('لم يُعثر على صنف بهذا الرمز')});
 $('#lines').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
-  if(b.dataset.inc)setQty(b.dataset.inc,inCart(b.dataset.inc)+1);
-  if(b.dataset.dec)setQty(b.dataset.dec,inCart(b.dataset.dec)-1);
+  if(b.dataset.inc)setQty(b.dataset.inc,lineQ(b.dataset.inc)+1);
+  if(b.dataset.dec)setQty(b.dataset.dec,lineQ(b.dataset.dec)-1);
   if(b.dataset.w)weighDialog(S.products.find(x=>x.id===b.dataset.w))});
 $('#priceMode').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
   if(b.dataset.pm==='whole'&&!moreOk)return toast('شغّل أوامر الجملة والمصروفات في Supabase الأول');
+  if(b.dataset.pm!==priceMode&&cart.some(l=>{const p=S.products.find(x=>x.id===l.pid);return p&&p.whUnit&&p.whQty>0}))return toast('اختار قطاعي أو جملة قبل ما تضيف أصناف ليها كرتونة');
   priceMode=b.dataset.pm;cart.forEach(l=>{const p=S.products.find(x=>x.id===l.pid);if(p)l.price=priceOf(p)});renderPOS()});
 $('#method').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;method=b.dataset.m;renderPOS()});
 $('#quickCash').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;$('#paid').value=b.dataset.cash;renderPOS()});
@@ -667,7 +680,7 @@ $('#payBtn').addEventListener('click',()=>{
     :buildSale(cart.map(l=>({...l})),Number($('#discount').value)||0,method,$('#paid').value,S.settings,S.next++);
   if(cust){sale.party=cust;if(method==='credit'){sale.paid=0;sale.change=0}}
   if(priceMode==='whole')sale.wholesale=true;$('#custSel').value='';
-  sale.items.forEach(l=>{const p=S.products.find(x=>x.id===l.pid);if(p)p.stock=round(p.stock-l.qty,3)});
+  sale.items.forEach(l=>{const p=S.products.find(x=>x.id===l.pid);if(p)p.stock=round(p.stock-baseQ(l),3)});
   editing=null;S.sales.push(sale);S.sales.sort((a,b)=>a.ts-b.ts);save();cart=[];resetPay();renderPOS();showReceipt(sale);
 });
 
@@ -707,7 +720,7 @@ function showReceipt(s){
     save();close();renderAll();show('pos');if(s.party)$('#custSel').value=s.party;toast('عدّل الأصناف ثم ادفع لحفظ فاتورة رقم '+s.no)};
 }
 // Remove a sale and put its quantities back in stock (dir -1 takes them out again).
-function unsell(s,dir=1){s.items.forEach(l=>{const p=S.products.find(x=>x.id===l.pid);if(p)p.stock=round(p.stock+dir*l.qty,3)})}
+function unsell(s,dir=1){s.items.forEach(l=>{const p=S.products.find(x=>x.id===l.pid);if(p)p.stock=round(p.stock+dir*baseQ(l),3)})}
 function dropSale(s){unsell(s);S.sales=S.sales.filter(x=>x.id!==s.id)}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')$('#modal').innerHTML=''});
 async function receiptImage(s){
@@ -781,16 +794,20 @@ function renderStock(){
   const rows=[...S.products].sort((a,b)=>(a.stock-a.min)-(b.stock-b.min));
   $('#stockTbl').innerHTML=`<thead><tr><th>الصنف</th><th>التصنيف</th><th>الرمز</th><th>الوحدة</th><th>سعر البيع</th><th>الجملة</th><th>التكلفة</th><th>الربح للوحدة</th><th>المتوفر</th><th>الحالة</th><th></th></tr></thead><tbody>`+
     (rows.length?rows.map(p=>{const st=p.stock<=0?'<span class="pill out">نفد</span>':p.stock<=p.min?'<span class="pill low">منخفض</span>':'<span class="pill">متوفر</span>';
-      return `<tr><td>${esc(p.name)}</td><td>${esc(p.cat)}</td><td class="num">${esc(p.code||'—')}</td><td>${UNITS[p.unit]}</td><td>${M(p.price)}</td><td>${p.wholesale>0?M(p.wholesale):'—'}</td><td>${M(p.cost)}</td><td>${M(p.price-p.cost)}</td><td>${fq(p.stock,p.unit)}</td><td>${st}</td>
+      return `<tr><td>${esc(p.name)}</td><td>${esc(p.cat)}</td><td class="num">${esc(p.code||'—')}</td><td>${UNITS[p.unit]}</td><td>${M(p.price)}</td><td>${p.wholesale>0?M(p.wholesale)+(p.whUnit&&p.whQty>0?' <span class="unit">/ '+UNITS[p.whUnit]+' '+fq(p.whQty,p.unit)+'</span>':''):'—'}</td><td>${M(p.cost)}</td><td>${M(p.price-p.cost)}</td><td>${fq(p.stock,p.unit)}</td><td>${st}</td>
       <td class="act"><button class="link" data-edit="${p.id}">تعديل</button><button class="link del" data-del="${p.id}">حذف</button></td></tr>`}).join('')
     :'<tr><td colspan="11" class="empty">لا توجد أصناف. أضف أول صنف من النموذج أعلاه.</td></tr>')+'</tbody>';
 }
 // Next free short code: one above the highest numeric code in use, starting at 101.
 function nextCode(){const n=S.products.map(p=>/^\d{1,6}$/.test(p.code||'')?+p.code:0);return String(Math.max(100,...n)+1)}
-function resetForm(){$('#prodForm').reset();$('#pId').value='';$('#pSave').textContent='إضافة';$('#pCancel').hidden=true;$('#pMin').value=5;$('#pCode').value=nextCode()}
+function whUi(){const u=$('#pWhU').value,b=UNITS[$('#pUnit').value]||'';$('#pWhQL').hidden=!u;$('#pWhQL').firstChild.textContent=(u?'ال'+UNITS[u]:'')+' فيها كام '+b;$('#pWholeL').textContent=u?'سعر الجملة لل'+UNITS[u]:'سعر الجملة (اختياري)'}
+['#pWhU','#pUnit'].forEach(q=>$(q).addEventListener('change',whUi));
+function resetForm(){$('#prodForm').reset();whUi();$('#pId').value='';$('#pSave').textContent='إضافة';$('#pCancel').hidden=true;$('#pMin').value=5;$('#pCode').value=nextCode()}
 $('#prodForm').addEventListener('submit',e=>{e.preventDefault();
   const unit=$('#pUnit').value;
-  const data={name:$('#pName').value.trim(),cat:$('#pCat').value.trim(),unit,code:$('#pCode').value.trim()||nextCode(),price:Number($('#pPrice').value),cost:Number($('#pCost').value)||0,stock:round(Number($('#pStock').value)||0,unit==='kg'?3:0),min:Number($('#pMin').value)||0,wholesale:$('#pWhole').value===''?null:Number($('#pWhole').value)};
+  const data={name:$('#pName').value.trim(),cat:$('#pCat').value.trim(),unit,code:$('#pCode').value.trim()||nextCode(),price:Number($('#pPrice').value),cost:Number($('#pCost').value)||0,stock:round(Number($('#pStock').value)||0,unit==='kg'?3:0),min:Number($('#pMin').value)||0,wholesale:$('#pWhole').value===''?null:Number($('#pWhole').value),whUnit:$('#pWhU').value,whQty:$('#pWhU').value?Number($('#pWhQ').value)||0:0};
+  if(data.whUnit&&!(data.whQty>0)){toast('اكتب الكرتونة فيها كام');$('#pWhQ').focus();return}
+  if(data.whUnit&&!cartonOk){toast('شغّل أمر الكرتونة في Supabase الأول');return}
   const id=$('#pId').value;
   if(data.wholesale!=null&&!moreOk){toast('شغّل أوامر الجملة والمصروفات في Supabase الأول');return}
   if(S.products.some(p=>p.id!==id&&String(p.code)===data.code)){toast('الرمز '+data.code+' مستخدم لصنف آخر');$('#pCode').focus();return}
@@ -799,7 +816,7 @@ $('#prodForm').addEventListener('submit',e=>{e.preventDefault();
 $('#pCancel').addEventListener('click',resetForm);
 let pendingDel=null;
 $('#stockTbl').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
-  if(b.dataset.edit){const p=S.products.find(x=>x.id===b.dataset.edit);$('#pId').value=p.id;$('#pName').value=p.name;$('#pCat').value=p.cat;$('#pUnit').value=p.unit||'pc';$('#pCode').value=p.code||'';$('#pPrice').value=p.price;$('#pCost').value=p.cost;$('#pStock').value=p.stock;$('#pMin').value=p.min;$('#pWhole').value=p.wholesale??'';$('#pSave').textContent='حفظ التعديل';$('#pCancel').hidden=false;$('#pName').focus();window.scrollTo({top:0,behavior:'smooth'})}
+  if(b.dataset.edit){const p=S.products.find(x=>x.id===b.dataset.edit);$('#pId').value=p.id;$('#pName').value=p.name;$('#pCat').value=p.cat;$('#pUnit').value=p.unit||'pc';$('#pCode').value=p.code||'';$('#pPrice').value=p.price;$('#pCost').value=p.cost;$('#pStock').value=p.stock;$('#pMin').value=p.min;$('#pWhole').value=p.wholesale??'';$('#pWhU').value=p.whUnit||'';$('#pWhQ').value=p.whQty||'';whUi();$('#pSave').textContent='حفظ التعديل';$('#pCancel').hidden=false;$('#pName').focus();window.scrollTo({top:0,behavior:'smooth'})}
   if(b.dataset.del){if(pendingDel===b.dataset.del){S.products=S.products.filter(p=>p.id!==pendingDel);cart=cart.filter(l=>l.pid!==pendingDel);pendingDel=null;save();renderStock()}else{pendingDel=b.dataset.del;b.textContent='اضغط للتأكيد';setTimeout(()=>{if(pendingDel===b.dataset.del){pendingDel=null;b.textContent='حذف'}},3000)}}
 });
 
@@ -817,9 +834,9 @@ function reportData(){
   const sum=(f,list=ss)=>list.reduce((a,s)=>a+f(s),0);
   const costOf=s=>s.items.reduce((a,l)=>a+l.cost*l.qty,0);
   const total=sum(s=>s.total),tax=sum(s=>s.tax),cost=sum(costOf);
-  const kg=round(sum(s=>s.items.reduce((a,l)=>a+(l.unit==='kg'?l.qty:0),0)),3);
+  const kg=round(sum(s=>s.items.reduce((a,l)=>a+(l.unit==='kg'?l.qty:l.base==='kg'?baseQ(l):0),0)),3);
   const cash=sum(s=>s.method==='cash'?s.total:0),credit=sum(s=>s.method==='credit'?s.total:0);
-  const agg={};ss.forEach(s=>s.items.forEach(l=>{agg[l.name]=agg[l.name]||{q:0,v:0,u:l.unit};agg[l.name].q+=l.qty;agg[l.name].v+=lineTotal(l)}));
+  const agg={};ss.forEach(s=>s.items.forEach(l=>{const k=l.name+(l.base?' ('+UNITS[l.unit]+')':'');agg[k]=agg[k]||{q:0,v:0,u:l.unit};agg[k].q+=l.qty;agg[k].v+=lineTotal(l)}));
   const top=Object.entries(agg).sort((a,b)=>b[1].v-a[1].v);
   const byDay={};ss.forEach(s=>{const k=dayKey(new Date(s.ts));(byDay[k]=byDay[k]||[]).push(s)});
   const days=Object.keys(byDay).sort().map(k=>({k,n:byDay[k].length,total:sum(s=>s.total,byDay[k]),profit:sum(s=>s.total-s.tax-costOf(s),byDay[k])}));
@@ -835,7 +852,7 @@ function renderReport(){
   $('#kpis').innerHTML=[['إجمالي المبيعات',M(r.total)],['عدد الفواتير','<span class="num">'+r.ss.length+'</span>'],['ربح المبيعات',M(r.profit)],...(r.exp?[['المصروفات',M(r.exp)],['الصافي بعد المصروفات',M(r.net)]]:[]),['الكمية المباعة بالوزن',fq(r.kg,'kg')],['نقدًا',M(r.cash)],['بطاقة',M(r.card)],...(r.credit?[['آجل',M(r.credit)]]:[])]
     .map(([k,v])=>`<div class="card kpi"><div>${k}</div><strong>${v}</strong></div>`).join('');
   const top=r.top.slice(0,r.month?10:6),mx=top.length?top[0][1].v:1;
-  $('#top').innerHTML=top.length?top.map(([n,o])=>`<div style="padding:8px 0"><div style="display:flex;justify-content:space-between;gap:8px;font-size:14px"><span>${esc(n)} <span style="color:var(--muted)">${fq(round(o.q,3),o.u)}</span></span><span>${M(o.v)}</span></div><div class="bar"><i style="width:${o.v/mx*100}%"></i></div></div>`).join(''):`<div class="empty">لا توجد مبيعات في ${r.month?'هذا الشهر':'هذا اليوم'}.</div>`;
+  $('#top').innerHTML=top.length?top.map(([n,o])=>`<div style="padding:8px 0"><div style="display:flex;justify-content:space-between;gap:8px;font-size:15.5px"><span>${esc(n)} <span style="color:var(--muted)">${fq(round(o.q,3),o.u)}</span></span><span>${M(o.v)}</span></div><div class="bar"><i style="width:${o.v/mx*100}%"></i></div></div>`).join(''):`<div class="empty">لا توجد مبيعات في ${r.month?'هذا الشهر':'هذا اليوم'}.</div>`;
   $('#invHead').textContent=r.month?'المبيعات حسب اليوم':'الفواتير';
   if(r.month){
     $('#invTbl').innerHTML=`<thead><tr><th>اليوم</th><th>الفواتير</th><th>المبيعات</th><th>الربح</th></tr></thead><tbody>`+
@@ -943,7 +960,7 @@ function renderAcct(){
   $('#ptAdd').textContent='إضافة '+KIND[acctKind];
   $('#ptOpenLbl').firstChild.textContent=cust?'رصيد سابق (عليه)':'رصيد سابق (له)';
   const list=S.parties.filter(p=>p.kind===acctKind);
-  let tot=0;const rows=list.map(p=>{const b=statement(p).bal;tot+=b;return `<tr><td><button class="link" data-party="${p.id}">${esc(p.name)}</button></td><td class="num">${esc(p.phone||'')}</td><td>${M(Math.abs(b))} <span style="color:var(--muted);font-size:12.5px">${balWord(p,b)}</span></td></tr>`});
+  let tot=0;const rows=list.map(p=>{const b=statement(p).bal;tot+=b;return `<tr><td><button class="link" data-party="${p.id}">${esc(p.name)}</button></td><td class="num">${esc(p.phone||'')}</td><td>${M(Math.abs(b))} <span style="color:var(--muted);font-size:14px">${balWord(p,b)}</span></td></tr>`});
   $('#partyTbl').innerHTML=`<thead><tr><th>${{customer:'العميل',supplier:'المورد',partner:'الشريك'}[acctKind]}</th><th>الموبايل</th><th>الرصيد</th></tr></thead><tbody>`+(rows.length?rows.join('')+`<tr><td colspan="2"><b>الإجمالي</b></td><td><b>${M(Math.abs(round(tot)))}</b></td></tr>`:`<tr><td colspan="3" class="empty">لا يوجد ${{customer:'عملاء',supplier:'موردين',partner:'شركاء'}[acctKind]} بعد. أضف من فوق.</td></tr>`)+'</tbody>';
 }
 $('#acctKind').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
@@ -1047,7 +1064,7 @@ function renderHome(){
   let g='';for(let i=0;i<=4;i++){const v=top*i/4,yy=y(v);g+=`<line x1="${pl}" x2="${W-6}" y1="${yy}" y2="${yy}"/><text x="${pl-6}" y="${yy+4}" text-anchor="end">${Math.round(v)}</text>`}
   // RTL reading order: oldest month on the right
   ms.forEach((m,i)=>{const x=W-10-(i+1)*cw+cw*.18,bw=cw*.3;g+=`<rect class="s1" x="${x+bw}" y="${y(m.s)}" width="${bw}" height="${H-pb-y(m.s)}" rx="3"/><rect class="s2" x="${x}" y="${y(m.e)}" width="${bw}" height="${H-pb-y(m.e)}" rx="3"/><text x="${x+bw}" y="${H-6}" text-anchor="middle">${m.n}</text>`});
-  $('#hChart').innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="المبيعات والمصروفات آخر ٦ شهور">${g}</svg>`;
+  $('#hChart').classList.toggle('narrow',W<480);$('#hChart').innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="المبيعات والمصروفات آخر ٦ شهور">${g}</svg>`;
   $('#hLow').innerHTML=low.slice(0,6).map(p=>`<div class="li"><div>${esc(p.name)}<small>حد التنبيه ${fq(p.min,p.unit)}</small></div><span class="pill ${p.stock<=0?'out':'low'}">${p.stock<=0?'خلص':fq(p.stock,p.unit)}</span></div>`).join('')||'<div class="empty">كل الأصناف متوفرة</div>';
   $('#hInv').innerHTML=S.sales.slice(-6).reverse().map(s=>`<div class="li"><div>فاتورة <span class="num">${s.no}</span><small>${new Date(s.ts).toLocaleTimeString('ar',{hour:'2-digit',minute:'2-digit'})} · ${METH[s.method]}${s.party?' · '+esc(partyName(s.party)):''}</small></div><b>${M(s.total)}</b></div>`).join('')||'<div class="empty">لسه مفيش فواتير</div>';
 }
