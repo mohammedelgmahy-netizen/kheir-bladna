@@ -222,6 +222,21 @@ body.booting .main>header::after{content:"";position:absolute;inset:auto 0 0;hei
 .netv.neg{color:var(--bad)}
 .netd{font-size:14px;color:var(--muted)}
 .sm-btn{padding:5px 10px;font-size:14px;border-radius:8px;white-space:nowrap}
+.psec .tbl-wrap{overflow:visible}
+/* Phones: each table row becomes a small card of label/value lines, so nothing needs a sideways swipe */
+@media (max-width:700px){
+  .psec table,.psec tbody,.psec tr,.psec td{display:block;width:100%}
+  .psec thead{display:none}
+  .psec tr{padding:10px 14px;border-bottom:1px solid var(--line)}
+  .psec tr:nth-child(even){background:var(--sunk)}
+  .psec td{border:0;padding:3px 0;white-space:normal;text-align:end;overflow:hidden}
+  .psec td::before{content:attr(data-l);float:inline-start;color:var(--muted);font-size:14px;font-weight:500;margin-inline-end:10px}
+  .psec td:first-child{font-weight:700;font-size:17px;text-align:start}
+  #acctKind button{white-space:nowrap;padding:6px 2px;font-size:15px}
+  .psec td:first-child::before{content:none}
+  .psec td.empty{display:block;text-align:center}.psec td.empty::before{content:none}
+  .psec td:empty{display:none}
+}
 .st{display:inline-block;border-radius:999px;padding:1px 10px;font-size:13.5px;background:var(--warn-soft);color:var(--warn)}
 .st.paid{background:var(--ok-soft);color:var(--ok)}.st.part{background:#e8f0fb;color:#2b5d9b}
 /* Home dashboard */
@@ -1055,7 +1070,7 @@ function partTables(d){
   const opening=d.ps.filter(p=>p.opening>0&&(!pFilter.fund||p.id===pFilter.fund));
   const fund=`<thead><tr><th>الشريك</th><th>مبلغ التمويل</th><th>النسبة من الإجمالي</th><th>التاريخ</th><th>ملاحظات</th></tr></thead><tbody>`+
     (f1.length+opening.length?opening.map(p=>`<tr><td>${esc(p.name)}</td><td>${M(p.opening)}</td><td>${pctS(d.totF?p.opening/d.totF:0)}</td><td>—</td><td>رصيد سابق</td></tr>`).join('')+
-      f1.map(l=>`<tr><td>${nm(l.party)}</td><td>${M(l.amount)}</td><td>${pctS(d.totF?l.amount/d.totF:0)}</td><td class="num">${fmtD(l.ts)}</td><td>${esc(l.note||'')}</td></tr>`).join(''):E(5,'لا يوجد تمويل، سجّله من الفورم اللي فوق'))+'</tbody>';
+      f1.map(l=>`<tr><td>${nm(l.party)}</td><td>${M(l.amount)}</td><td>${pctS(d.totF?l.amount/d.totF:0)}</td><td><span class="num">${fmtD(l.ts)}</span></td><td>${esc(l.note||'')}</td></tr>`).join(''):E(5,'لا يوجد تمويل، سجّله من الفورم اللي فوق'))+'</tbody>';
   const sum=`<thead><tr><th>الشريك</th><th>إجمالي التمويل</th><th>النسبة</th><th>حصته من الربح</th><th>المعتمد</th><th>الموزّع فعلًا</th><th>المتبقي له</th><th class="noprint">اعتماد</th></tr></thead><tbody>`+
     (d.rows.length?d.rows.map(r=>`<tr><td><button class="link" data-party="${r.p.id}">${esc(r.p.name)}</button></td><td>${M(r.f)}</td><td>${pctS(r.pct)}</td><td class="hl">${M(r.share)}</td><td>${M(r.due)}</td><td>${M(r.paid)}</td><td class="rem">${M(r.rem)}</td><td class="noprint">${r.open>0.004?`<button class="btn sm-btn primary" data-approve="${r.p.id}">اعتماد ${money(r.open)}</button>`:'<span class="st paid">معتمد</span>'}</td></tr>`).join('')+
       `<tr><td><b>الإجمالي</b></td><td><b>${M(d.totF)}</b></td><td>${pctS(d.totF?1:0)}</td><td class="hl">${M(d.rows.reduce((a,r)=>a+r.share,0))}</td><td>${M(d.rows.reduce((a,r)=>a+r.due,0))}</td><td>${M(d.rows.reduce((a,r)=>a+r.paid,0))}</td><td class="rem">${M(d.rows.reduce((a,r)=>a+r.rem,0))}</td><td class="noprint"></td></tr>`:E(8,'أضف الشركاء من الفورم اللي فوق'))+'</tbody>';
@@ -1064,10 +1079,10 @@ function partTables(d){
   const dues=d.L('due').sort((a,b)=>a.ts-b.ts).map(l=>{const t=Math.min(left[l.party]||0,l.amount);left[l.party]=round((left[l.party]||0)-t);
     return{l,st:t>=l.amount-0.004?'<span class="st paid">مدفوع</span>':t>0?`<span class="st part">مدفوع ${money(t)}</span>`:'<span class="st">معتمد</span>'}}).reverse();
   const due=`<thead><tr><th>الشريك</th><th>المبلغ المعتمد</th><th>تاريخ الاعتماد</th><th>الحالة</th></tr></thead><tbody>`+
-    (dues.length?dues.map(x=>`<tr><td>${nm(x.l.party)}</td><td>${M(x.l.amount)}</td><td class="num">${fmtD(x.l.ts)}</td><td>${x.st}</td></tr>`).join(''):E(4,'لا توجد مستحقات معتمدة. اضغط «اعتماد» في الملخص'))+'</tbody>';
+    (dues.length?dues.map(x=>`<tr><td>${nm(x.l.party)}</td><td>${M(x.l.amount)}</td><td><span class="num">${fmtD(x.l.ts)}</span></td><td>${x.st}</td></tr>`).join(''):E(4,'لا توجد مستحقات معتمدة. اضغط «اعتماد» في الملخص'))+'</tbody>';
   const d1=d.L('dist').filter(l=>!pFilter.dist||l.party===pFilter.dist).sort((a,b)=>b.ts-a.ts);
   const dist=`<thead><tr><th>الشريك</th><th>إجمالي تمويله</th><th>المبلغ الموزّع</th><th>التاريخ</th><th>ملاحظات</th></tr></thead><tbody>`+
-    (d1.length?d1.map(l=>{const p=d.ps.find(x=>x.id===l.party);return `<tr><td>${nm(l.party)}</td><td>${M(p?d.fund(p):0)}</td><td class="hl">${M(l.amount)}</td><td class="num">${fmtD(l.ts)}</td><td>${esc(l.note||'')}</td></tr>`}).join(''):E(5,'لا توجد توزيعات مسجلة'))+'</tbody>';
+    (d1.length?d1.map(l=>{const p=d.ps.find(x=>x.id===l.party);return `<tr><td>${nm(l.party)}</td><td>${M(p?d.fund(p):0)}</td><td class="hl">${M(l.amount)}</td><td><span class="num">${fmtD(l.ts)}</span></td><td>${esc(l.note||'')}</td></tr>`}).join(''):E(5,'لا توجد توزيعات مسجلة'))+'</tbody>';
   return{fund,sum,due,dist};
 }
 function renderPartners(){
@@ -1078,6 +1093,9 @@ function renderPartners(){
   document.querySelectorAll('#partBox [data-filter]').forEach(sel=>{sel.innerHTML=opts('كل الشركاء');sel.value=pFilter[sel.dataset.filter]});
   if(!$('#fDate').value)$('#fDate').value=today();if(!$('#dDate').value)$('#dDate').value=today();
   $('#fundTbl').innerHTML=t.fund;$('#sumTbl').innerHTML=t.sum;$('#dueTbl').innerHTML=t.due;$('#distTbl').innerHTML=t.dist;fundPct();
+  // label every cell with its column name for the phone card layout
+  document.querySelectorAll('#partBox table').forEach(tb=>{const h=[...tb.querySelectorAll('thead th')].map(x=>x.textContent);
+    tb.querySelectorAll('tbody tr').forEach(r=>[...r.children].forEach((c,i)=>{if(h[i])c.dataset.l=h[i]}))});
 }
 function fundPct(){const d=partnerData(),p=d.ps.find(x=>x.id===$('#fPart').value),a=Number($('#fAmt').value)||0;
   $('#fPct').innerHTML=p&&a>0?pctS((d.fund(p)+a)/(d.totF+a)):p?pctS(d.totF?d.fund(p)/d.totF:0):'—'}
