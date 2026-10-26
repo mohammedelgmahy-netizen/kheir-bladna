@@ -1031,7 +1031,7 @@ function statement(pt){
   const cust=pt.kind==='customer',ent=[];
   // A customer's cash/card invoice shows as the sale and its payment, so it nets to zero.
   if(cust)S.sales.filter(s=>s.party===pt.id).forEach(s=>{ent.push({ts:s.ts,desc:'فاتورة رقم '+s.no+(s.method==='credit'?'':' ('+METH[s.method]+')'),up:s.total,sale:s.id});if(s.method!=='credit')ent.push({ts:s.ts+1,desc:'مدفوع مع الفاتورة',up:-s.total})});
-  const LD={buy:'مشتريات',dep:'تمويل من الشريك',wd:'مسحوبات الشريك',dist:'نصيب من الربح',pay:cust?'دفعة من العميل':'دفعة للمورد'};
+  const LD={buy:'مشتريات',dep:'تمويل من الشريك',wd:'اتصرف له من الربح',pay:cust?'دفعة من العميل':'دفعة للمورد'};
   S.ledger.filter(l=>l.party===pt.id).forEach(l=>ent.push({ts:l.ts,desc:LD[l.kind]+(l.note?' · '+l.note:''),up:l.kind==='buy'||l.kind==='dep'?l.amount:-l.amount,id:l.id}));
   ent.sort((a,b)=>a.ts-b.ts);let bal=pt.opening||0;ent.forEach(x=>{bal=round(bal+x.up);x.bal=bal});
   return{ent,bal};
@@ -1064,7 +1064,7 @@ function partnerData(){
   const L=k=>S.ledger.filter(l=>l.kind===k&&ps.some(p=>p.id===l.party));
   const cap=p=>round((p.opening||0)+L('dep').filter(l=>l.party===p.id).reduce((a,l)=>a+l.amount,0));
   const totF=round(ps.reduce((a,p)=>a+cap(p),0));
-  const rows=ps.map(p=>{const f=cap(p),pct=totF>0?f/totF:0,share=round(Math.max(0,net)*pct),paid=round(L('dist').filter(l=>l.party===p.id).reduce((a,l)=>a+l.amount,0));
+  const rows=ps.map(p=>{const f=cap(p),pct=totF>0?f/totF:0,share=round(Math.max(0,net)*pct),paid=round(L('wd').filter(l=>l.party===p.id).reduce((a,l)=>a+l.amount,0));
     return{p,f,pct,share,paid,rem:round(share-paid)}});
   return{ps,net,prof,exp,totF,rows,L,cap};
 }
@@ -1074,7 +1074,7 @@ function partTables(d){
   const sum=`<thead><tr><th>الشريك</th><th>راس المال</th><th>النسبة</th><th>نصيبه من الربح</th><th>اتصرف له</th><th>الباقي له</th></tr></thead><tbody>`+
     (d.rows.length?d.rows.map(r=>`<tr><td><button class="link" data-party="${r.p.id}">${esc(r.p.name)}</button></td><td>${M(r.f)}</td><td>${pctS(r.pct)}</td><td class="hl">${M(r.share)}</td><td>${M(r.paid)}</td><td class="rem">${M(r.rem)}</td></tr>`).join('')+
       (d.rows.length>1?`<tr><td><b>الإجمالي</b></td><td><b>${M(d.totF)}</b></td><td>${pctS(d.totF?1:0)}</td><td class="hl">${M(d.rows.reduce((a,r)=>a+r.share,0))}</td><td>${M(d.rows.reduce((a,r)=>a+r.paid,0))}</td><td class="rem">${M(d.rows.reduce((a,r)=>a+r.rem,0))}</td></tr>`:''):E(6,'أضف الشركاء من الفورم اللي فوق واكتب راس مال كل واحد'))+'</tbody>';
-  const d1=d.L('dist').filter(l=>!pFilter.dist||l.party===pFilter.dist).sort((a,b)=>b.ts-a.ts);
+  const d1=d.L('wd').filter(l=>!pFilter.dist||l.party===pFilter.dist).sort((a,b)=>b.ts-a.ts);
   const dist=`<thead><tr><th>الشريك</th><th>المبلغ</th><th>التاريخ</th><th>ملاحظة</th></tr></thead><tbody>`+
     (d1.length?d1.map(l=>`<tr><td>${nm(l.party)}</td><td class="hl">${M(l.amount)}</td><td><span class="num">${fmtD(l.ts)}</span></td><td>${esc(l.note||'')}</td></tr>`).join(''):E(4,'لسه مفيش دفعات'))+'</tbody>';
   return{sum,dist};
@@ -1093,7 +1093,7 @@ function renderPartners(){
 }
 const ledTs=v=>{if(!v||v===today())return Date.now();return new Date(v+'T12:00').getTime()};
 $('#distForm').addEventListener('submit',e=>{e.preventDefault();const a=round(Number($('#dAmt').value));if(!$('#dPart').value||!(a>0))return;
-  S.ledger.push({id:uid(),party:$('#dPart').value,ts:ledTs($('#dDate').value),kind:'dist',amount:a,note:$('#dNote').value.trim()});save();$('#dAmt').value='';$('#dNote').value='';renderPartners();toast('اتسجلت')});
+  S.ledger.push({id:uid(),party:$('#dPart').value,ts:ledTs($('#dDate').value),kind:'wd',amount:a,note:$('#dNote').value.trim()});save();$('#dAmt').value='';$('#dNote').value='';renderPartners();toast('اتسجلت')});
 $('#partBox').addEventListener('change',e=>{const f=e.target.closest('[data-filter]');if(f){pFilter[f.dataset.filter]=f.value;renderPartners()}});
 $('#partBox').addEventListener('click',e=>{
   const pt=e.target.closest('[data-party]');if(pt)return showStatement(pt.dataset.party);
