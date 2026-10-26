@@ -6,7 +6,8 @@
 </head><body>
 <title>كاشير خير بلدنا</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Tajawal:wght@400;500;700;800&display=swap">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Tajawal:wght@400;500;700;800&display=swap" media="print" onload="this.media='all'">
 <style>
 /* Layout: a till counter. Shelf of products on the right, the receipt-like cart on the left; stacks on phones. */
 :root{
@@ -172,6 +173,9 @@ form.add .field{padding:8px 10px}
 .sfoot{display:flex;align-items:center;gap:6px;font-size:13.5px;color:var(--muted);padding:12px 8px 0;border-top:1px solid var(--line);margin-top:10px}
 .sfoot i{width:8px;height:8px;border-radius:50%;background:#2fbf71;flex:none}
 .sfoot #sync[data-s="err"]{color:var(--bad)}
+body.booting .shell{pointer-events:none}
+body.booting .main>header::after{content:"";position:absolute;inset:auto 0 0;height:3px;background:linear-gradient(90deg,transparent,var(--gold),transparent);background-size:40% 100%;background-repeat:no-repeat;animation:bootbar 1s linear infinite}
+@keyframes bootbar{from{background-position:-40% 0}to{background-position:140% 0}}
 .main{min-width:0;padding:0 max(18px,env(safe-area-inset-left,0px)) 28px max(18px,env(safe-area-inset-right,0px))}
 .main>header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;align-items:center;gap:12px;margin:0 calc(-1*max(18px,env(safe-area-inset-left,0px))) 18px;padding:12px 18px;background:var(--top);color:var(--top-fg);border-bottom:1px solid var(--line)}
 .main>header .ttl{flex:1;min-width:0}
@@ -417,7 +421,7 @@ form.add .field{padding:8px 10px}
 </div>
 <div id="modal"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script>
 (function(){
 const KEY='kheir-pos-v3';
@@ -501,7 +505,13 @@ const sRow=s=>({id:s.id,owner:ownerId,no:s.no,ts:new Date(s.ts).toISOString(),me
 const ptRow=p=>({id:p.id,owner:ownerId,kind:p.kind,name:p.name,phone:p.phone||null,opening:p.opening||0});
 const lgRow=l=>({id:l.id,owner:ownerId,party:l.party,ts:new Date(l.ts).toISOString(),kind:l.kind,amount:l.amount,note:l.note||null});
 const stRow=()=>({owner:ownerId,store:S.settings.store,cur:S.settings.cur,tax:S.settings.tax,vat:S.settings.vat||null,next_no:S.next});
-function markSynced(){synced.products={};S.products.forEach(p=>synced.products[p.id]=JSON.stringify(pRow(p)));synced.sales=new Set(S.sales.map(s=>s.id));synced.settings=JSON.stringify(stRow());synced.parties={};S.parties.forEach(p=>synced.parties[p.id]=JSON.stringify(ptRow(p)));synced.ledger=new Set(S.ledger.map(l=>l.id));synced.expenses=new Set(S.expenses.map(x=>x.id))}
+function markSynced(){synced.products={};S.products.forEach(p=>synced.products[p.id]=JSON.stringify(pRow(p)));synced.sales=new Set(S.sales.map(s=>s.id));synced.settings=JSON.stringify(stRow());synced.parties={};S.parties.forEach(p=>synced.parties[p.id]=JSON.stringify(ptRow(p)));synced.ledger=new Set(S.ledger.map(l=>l.id));synced.expenses=new Set(S.expenses.map(x=>x.id));snap()}
+// Last synced data on this device, so the app opens at once and refreshes from Supabase behind it.
+const SNAP_KEY='kheir-pos-snap';let sessUid=null;
+function snap(){if(!sessUid)return;const d={uid:sessUid,ownerId,role,isOwner,myEmail,moreOk,cartonOk,staff,staffRole,S};
+  try{localStorage.setItem(SNAP_KEY,JSON.stringify(d))}catch(e){try{localStorage.setItem(SNAP_KEY,JSON.stringify({...d,S:{...S,sales:S.sales.slice(-300)}}))}catch(_){}}}
+function readSnap(){try{return JSON.parse(localStorage.getItem(SNAP_KEY)||'null')}catch(e){return null}}
+const dropSnap=()=>{try{localStorage.removeItem(SNAP_KEY)}catch(e){}};
 const must=r=>{if(r.error)throw r.error;return r.data};
 async function loadRemote(){
   const [p,s,st]=await Promise.all([sb.from('products').select('*').eq('owner',ownerId),sb.from('sales').select('*').eq('owner',ownerId).order('ts'),sb.from('settings').select('*').eq('owner',ownerId).maybeSingle()]);
@@ -1101,21 +1111,30 @@ function gate(mode,msg){
     enter(r.data.session)};
 }
 async function enter(session){
-  myEmail=(session.user.email||'').toLowerCase();ownerId=session.user.id;role='admin';$('#modal').innerHTML='';
+  sessUid=session.user.id;myEmail=(session.user.email||'').toLowerCase();ownerId=session.user.id;role='admin';$('#modal').innerHTML='';
   try{isOwner=true;const m=must(await sb.from('staff').select('owner,role').ilike('email',myEmail).neq('owner',session.user.id).limit(1));if(m.length){ownerId=m[0].owner;isOwner=false;role=m[0].role==='manager'?'admin':'cashier'}}catch(e){}
   applyRole();
   try{await loadRemote();setSync('ok')}catch(e){toast('تعذّر تحميل البيانات: '+(e.message||''));if(/relation|does not exist|schema cache/i.test(e.message||''))toast('شغّل ملف schema.sql في Supabase أولًا')}
-  $('#who').textContent=showId(session.user.email||'')+(isAdmin()?(isOwner?' (المدير)':' (مدير)'):' (كاشير)');show(isAdmin()?'home':'pos');
+  $('#who').textContent=showId(session.user.email||'')+(isAdmin()?(isOwner?' (المدير)':' (مدير)'):' (كاشير)');show(isAdmin()?'home':'pos');document.body.classList.remove('booting');
 }
 async function start(){
+  if(!window.supabase)await new Promise(r=>{const t=$('#sbjs');t.addEventListener('load',r);t.addEventListener('error',r)});
+  if(!window.supabase){document.body.classList.remove('booting');return gate('login','مقدرتش أوصل للنت. اتأكد من الإنترنت وافتح البرنامج تاني')}
   if(!cfg||!cfg.url||!cfg.key)return gate('setup');
   try{sb=supabase.createClient(cfg.url,cfg.key)}catch(e){return gate('setup','الرابط أو المفتاح غير صحيح')}
   const {data,error}=await sb.auth.getSession();
   if(error)return gate('setup','تعذّر الاتصال بـ Supabase. تحقق من الرابط والمفتاح');
+  if(data.session&&booted&&booted.uid!==data.session.user.id){S=fresh(false);renderAll()}
+  if(!data.session){dropSnap();document.body.classList.remove('booting');S=fresh(false);renderAll()}
   data.session?enter(data.session):gate('login');
 }
-$('#logout').addEventListener('click',async()=>{await sb?.auth.signOut();S=fresh(false);cart=[];renderAll();gate('login')});
-renderAll();start();
+$('#logout').addEventListener('click',async()=>{dropSnap();sessUid=null;await sb?.auth.signOut();S=fresh(false);cart=[];renderAll();gate('login')});
+// Open straight onto the last synced data; taps wait until the fresh copy from Supabase is in.
+const booted=readSnap();
+if(booted&&booted.S){({ownerId,role,isOwner,myEmail,moreOk,cartonOk}=booted);staff=booted.staff||[];staffRole=booted.staffRole||{};S=booted.S;
+  document.body.classList.add('booting');applyRole();setSync('busy');show(role==='admin'?'home':'pos');$('#sync').textContent='بيحدّث…'}
+else renderAll();
+start();
 })();
 </script>
 
