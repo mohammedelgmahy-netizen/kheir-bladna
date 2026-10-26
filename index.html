@@ -223,19 +223,20 @@ body.booting .main>header::after{content:"";position:absolute;inset:auto 0 0;hei
 .netd{font-size:14px;color:var(--muted)}
 .sm-btn{padding:5px 10px;font-size:14px;border-radius:8px;white-space:nowrap}
 .psec .tbl-wrap{overflow:visible}
-/* Phones: each table row becomes a small card of label/value lines, so nothing needs a sideways swipe */
+/* Phones: each table row becomes a compact card, three label/value pairs per line, so nothing needs a sideways swipe */
 @media (max-width:700px){
-  .psec table,.psec tbody,.psec tr,.psec td{display:block;width:100%}
+  .psec table,.psec tbody{display:block;width:100%}
   .psec thead{display:none}
-  .psec tr{padding:10px 14px;border-bottom:1px solid var(--line)}
+  .psec tr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px 10px;padding:9px 12px;border-bottom:1px solid var(--line)}
   .psec tr:nth-child(even){background:var(--sunk)}
-  .psec td{border:0;padding:3px 0;white-space:normal;text-align:end;overflow:hidden}
-  .psec td::before{content:attr(data-l);float:inline-start;color:var(--muted);font-size:14px;font-weight:500;margin-inline-end:10px}
-  .psec td:first-child{font-weight:700;font-size:17px;text-align:start}
-  #acctKind button{white-space:nowrap;padding:6px 2px;font-size:15px}
+  .psec td{display:block;border:0;padding:0;white-space:nowrap;font-size:14.5px;line-height:1.35;overflow:hidden;text-overflow:ellipsis}
+  .psec td::before{content:attr(data-l);display:block;color:var(--muted);font-size:12.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .psec td:first-child{grid-column:1/-1;font-weight:700;font-size:16px}
   .psec td:first-child::before{content:none}
-  .psec td.empty{display:block;text-align:center}.psec td.empty::before{content:none}
+  .psec td.empty{grid-column:1/-1;text-align:center;white-space:normal}.psec td.empty::before{content:none}
   .psec td:empty{display:none}
+  .psec td .sm-btn{padding:3px 8px;font-size:13px}
+  #acctKind button{white-space:nowrap;padding:6px 2px;font-size:15px}
 }
 .st{display:inline-block;border-radius:999px;padding:1px 10px;font-size:13.5px;background:var(--warn-soft);color:var(--warn)}
 .st.paid{background:var(--ok-soft);color:var(--ok)}.st.part{background:#e8f0fb;color:#2b5d9b}
