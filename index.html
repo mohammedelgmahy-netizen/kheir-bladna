@@ -259,6 +259,11 @@ body.booting .main>header::after{content:"";position:absolute;inset:auto 0 0;hei
 .dkc .ib.g{background:var(--ok-soft);color:var(--ok)}.dkc .ib.w{background:var(--warn-soft);color:var(--warn)}.dkc .ib.b{background:var(--bad-soft);color:var(--bad)}
 .dkc div{min-width:0}
 .cb2{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+/* Zakat: the card and the menu dot turn orange a month before the lunar year ends, red once it is due */
+.zk{padding:16px;border-radius:14px;margin-bottom:14px;border-inline-start:6px solid var(--ok)}
+.zk.soon{border-inline-start-color:var(--warn);background:var(--warn-soft)}.zk.due{border-inline-start-color:var(--bad);background:var(--bad-soft)}
+.zk b{display:block;font-size:17px}.zk strong{font-family:var(--f-display);font-size:26px;display:block;margin:4px 0}.zk small{color:var(--muted);font-size:14px}
+#tabs .dot{width:10px;height:10px;border-radius:50%;margin-inline-start:auto;background:var(--warn)}#tabs .dot.due{background:var(--bad)}
 @media (max-width:600px){#acctKind{flex-wrap:wrap}#acctKind button{flex:1 1 30%}}
 @media (max-width:600px){.dkc{flex-direction:column;gap:8px;padding:14px}.dkc .ib{width:38px;height:38px}}
 .dkc div>span{font-size:14.5px;color:var(--muted);display:block}
@@ -295,6 +300,7 @@ body.booting .main>header::after{content:"";position:absolute;inset:auto 0 0;hei
       <button data-tab="acct" data-k="partner" data-admin><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M7 7h7.5a3 3 0 0 1 0 6H9.5a3 3 0 0 0 0 6H17"/></svg><span>جاري الشركاء</span></button>
       <button data-tab="acct" data-k="expense" data-admin><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18v12H3zM3 10h18M7 15h3"/></svg><span>المصروفات</span></button>
       <button data-tab="acct" data-k="cashbank" data-admin><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h13v4M3 7v10a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-7a1 1 0 0 0-1-1H5a2 2 0 0 1-2-2zM16 14h.01"/></svg><span>الكاش والبنك</span></button>
+      <button data-tab="acct" data-k="zakat" data-admin><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.5 5 5.5.8-4 3.9.9 5.5-4.9-2.6L7.1 18.2l.9-5.5-4-3.9L9.5 8z"/></svg><span>الزكاة</span><i class="dot" id="zkDot" hidden></i></button>
       <div class="grp" data-admin>التقارير</div>
       <button data-tab="report" data-m="day" data-admin><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>تقرير يومي</span></button>
       <button data-tab="report" data-m="month" data-admin><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v16H4zM4 9h16M8 3v4M16 3v4"/></svg><span>تقرير شهري</span></button>
@@ -321,6 +327,7 @@ body.booting .main>header::after{content:"";position:absolute;inset:auto 0 0;hei
     <div class="hero"><div><b id="hDate"></b><small id="hSub"></small></div><div class="hsum"><small>مبيعات النهارده</small><strong id="hTotal"></strong></div></div>
     <div class="qa"><button class="btn primary" data-go="pos">+ فاتورة جديدة</button><button class="btn ghost" data-go="stock">+ مشتريات</button><button class="btn ghost" data-go="acct" data-k="expense">+ مصروف</button><button class="btn ghost" data-go="acct" data-k="customer">كشف حساب</button></div>
     <div class="dk" id="hKpis"></div>
+    <div class="card zk" id="hZakat" hidden style="margin-bottom:14px"></div>
     <div class="card dcard"><div class="dh"><b>المبيعات والمصروفات</b><small>آخر ٦ شهور</small></div><div class="lg"><span><i class="s1"></i>المبيعات</span><span><i class="s2"></i>المصروفات</span></div><div id="hChart"></div></div>
     <div class="two" style="margin-top:14px">
       <div class="card dcard"><div class="dh"><b>أصناف قربت تخلص</b><button class="link" data-go="stock">المخزون</button></div><div id="hLow"></div></div>
@@ -420,7 +427,7 @@ body.booting .main>header::after{content:"";position:absolute;inset:auto 0 0;hei
   <section id="v-acct" hidden>
     <h1 id="acctH">الحسابات</h1>
     <p class="sub" id="acctSub">كشف حساب العملاء والموردين وجاري الشركاء، والمصروفات. اضغط على الاسم عشان تشوف الكشف وتسجّل دفعة.</p>
-    <div class="seg" id="acctKind" style="max-width:560px;margin-bottom:12px"><button data-k="customer" aria-pressed="true">العملاء</button><button data-k="supplier" aria-pressed="false">الموردين</button><button data-k="partner" aria-pressed="false">جاري الشركاء</button><button data-k="expense" aria-pressed="false">المصروفات</button><button data-k="cashbank" aria-pressed="false">الكاش والبنك</button></div>
+    <div class="seg" id="acctKind" style="max-width:560px;margin-bottom:12px"><button data-k="customer" aria-pressed="true">العملاء</button><button data-k="supplier" aria-pressed="false">الموردين</button><button data-k="partner" aria-pressed="false">جاري الشركاء</button><button data-k="expense" aria-pressed="false">المصروفات</button><button data-k="cashbank" aria-pressed="false">الكاش والبنك</button><button data-k="zakat" aria-pressed="false">الزكاة</button></div>
     <form class="add card" id="partyForm" style="margin-bottom:14px">
       <label>الاسم<input class="field" id="ptName" required></label>
       <label>الموبايل (اختياري)<input class="field num" id="ptPhone" type="tel" inputmode="tel"></label>
@@ -462,6 +469,22 @@ body.booting .main>header::after{content:"";position:absolute;inset:auto 0 0;hei
       </form>
       <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap"><div class="seg" id="cbAcc" style="max-width:300px"><button data-a="" aria-pressed="true">الكل</button><button data-a="cash" aria-pressed="false">الكاش</button><button data-a="bank" aria-pressed="false">البنك</button></div><input class="field num" type="month" id="cbMonth"></div>
       <div class="card tbl-wrap"><table id="cbTbl"></table></div>
+    </div>
+    <div id="zkBox" hidden>
+      <div class="card zk" id="zkCard"></div>
+      <form class="add card" id="zkForm" style="margin-bottom:14px">
+        <label>بداية الحول (تاريخ أول ما ملكت النصاب)<input class="field num" id="zkStart" type="date" required></label>
+        <label>النصاب (اختياري، قيمة ٨٥ جرام دهب)<input class="field num" id="zkNisab" type="number" step="0.01" min="0" inputmode="decimal" placeholder="سيبه فاضي لو مش عارفه"></label>
+        <div style="display:flex;gap:8px;align-items:end"><button class="btn primary" style="flex:1">حفظ</button></div>
+      </form>
+      <div class="card tbl-wrap" style="margin-bottom:14px"><table id="zkTbl"></table></div>
+      <form class="add card" id="zkPay" style="margin-bottom:14px">
+        <label>دفعت زكاة<input class="field num" id="zpAmt" type="number" step="0.01" min="0.01" required inputmode="decimal"></label>
+        <label>من<select class="field" id="zpAcc"><option value="cash">الكاش</option><option value="bank">البنك</option></select></label>
+        <label>التاريخ<input class="field num" id="zpDate" type="date"></label>
+        <div style="display:flex;gap:8px;align-items:end"><button class="btn primary" style="flex:1">تسجيل وبدء حول جديد</button></div>
+      </form>
+      <div class="card tbl-wrap"><table id="zkLog"></table></div>
     </div>
     <div id="expBox" hidden>
       <form class="add card" id="expForm" style="margin-bottom:14px">
@@ -1076,10 +1099,10 @@ const KIND={customer:'عميل',supplier:'مورد',partner:'شريك'};
 function renderAcct(){
   const cust=acctKind==='customer',ex=acctKind==='expense';
   document.querySelectorAll('#acctKind button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===acctKind));
-  const pa=acctKind==='partner',cb=acctKind==='cashbank';
-  $('#acctH').textContent=pa?'جاري الشركاء':cb?'الكاش والبنك':'الحسابات';$('#acctSub').hidden=pa;
-  $('#partyForm').hidden=ex||cb;$('#partyBox').hidden=ex||pa||cb;$('#expBox').hidden=!ex;$('#partBox').hidden=!pa;$('#cbBox').hidden=!cb;
-  if(ex)return renderExp();if(cb)return renderCB();
+  const pa=acctKind==='partner',cb=acctKind==='cashbank',zk=acctKind==='zakat';
+  $('#acctH').textContent=pa?'جاري الشركاء':cb?'الكاش والبنك':zk?'الزكاة':'الحسابات';$('#acctSub').hidden=pa||cb||zk;
+  $('#partyForm').hidden=ex||cb||zk;$('#partyBox').hidden=ex||pa||cb||zk;$('#expBox').hidden=!ex;$('#partBox').hidden=!pa;$('#cbBox').hidden=!cb;$('#zkBox').hidden=!zk;
+  if(ex)return renderExp();if(cb)return renderCB();if(zk)return renderZakat();
   if(pa)renderPartners();
   $('#ptAdd').textContent='إضافة '+KIND[acctKind];
   $('#ptOpenLbl').firstChild.textContent=cust?'رصيد سابق (عليه)':pa?'راس المال':'رصيد سابق (له)';
@@ -1150,6 +1173,46 @@ function printPartners(){
     <body><header><img src="${LOGO}" alt=""><div><h1>${esc(S.settings.store)}</h1><div>جاري الشركاء · <span class="num">${fmtD(Date.now())}</span></div></div></header>${body}</body></html>`);
   f.contentDocument.close();setTimeout(()=>{f.contentWindow.focus();f.contentWindow.print();setTimeout(()=>f.remove(),1500)},300);
 }
+/* Zakat: 2.5% of zakatable wealth (cash, bank, what customers owe, stock at selling price, less what we owe) once a lunar year (354 days) has passed on it.
+   Rows live in expenses as '__zakat:start' (hawl start = ts), '__zakat:nisab' (amount) and '__zakat:paid' (amount, cash/bank tag). */
+const HAWL=354*86400000;
+const zkRows=t=>S.expenses.filter(x=>x.cat==='__zakat:'+t);
+function zakat(){
+  const st=zkRows('start').sort((a,b)=>b.ts-a.ts)[0],nis=zkRows('nisab').sort((a,b)=>b.ts-a.ts)[0],cb=cashBook().bal;
+  let cust=0,sup=0;S.parties.forEach(pt=>{const b=statement(pt).bal;if(pt.kind==='customer'&&b>0)cust+=b;if(pt.kind==='supplier'&&b>0)sup+=b});
+  const stock=S.products.reduce((a,p)=>a+Math.max(0,p.stock)*p.price,0);
+  const loans=S.parties.filter(p=>p.kind==='partner').reduce((a,p)=>a+loanRows(p.id).reduce((c,r)=>c+(r.t==='take'?r.amount:-r.amount),0),0);
+  const wealth=round(cb.cash+cb.bank+cust+stock-sup-loans),due=round(Math.max(0,wealth)*0.025),nisab=nis?nis.amount:0;
+  const start=st?st.ts:null,end=start?start+HAWL:null,days=end?Math.ceil((end-Date.now())/86400000):null;
+  const state=!start?'none':days<=0?'due':days<=30?'soon':'ok';
+  return{start,end,days,state,wealth,due,nisab,below:nisab>0&&wealth<nisab,parts:{cash:cb.cash,bank:cb.bank,cust,stock,sup,loans}};
+}
+function zkCard(z,home){
+  if(z.state==='none')return home?'':'<b>حدد بداية الحول</b><small>اكتب تاريخ أول ما كان معاك مال يبلغ النصاب، وهنحسبلك لما تعدي سنة هجرية (٣٥٤ يوم).</small>';
+  const t={ok:'لسه على الحول '+z.days+' يوم',soon:'فاضل '+z.days+' يوم على الحول',due:z.days===0?'الحول حلّ النهارده':'الحول حلّ من '+(-z.days)+' يوم'}[z.state];
+  return `<b>الزكاة المستحقة ${z.state==='due'?'دلوقتي':'لما يحل الحول'}</b><strong>${M(z.due)}</strong><small>${t} · الحول يحلّ <span class="num">${fmtD(z.end)}</span> · المال اللي عليه زكاة ${M(z.wealth)}${z.below?' (أقل من النصاب، مفيش زكاة واجبة)':''}</small>`;
+}
+function renderZakat(){
+  const z=zakat();$('#zkCard').className='card zk '+z.state;$('#zkCard').innerHTML=zkCard(z);
+  if(z.start&&!$('#zkStart').value)$('#zkStart').value=dayKey(new Date(z.start));if(z.nisab&&!$('#zkNisab').value)$('#zkNisab').value=z.nisab;if(!$('#zpDate').value)$('#zpDate').value=today();
+  const P=z.parts,R=(l,v,neg)=>`<tr><td>${l}</td><td>${neg?'− ':''}${M(v)}</td></tr>`;
+  $('#zkTbl').innerHTML=`<thead><tr><th>البند</th><th>القيمة</th></tr></thead><tbody>`+R('الكاش',P.cash)+R('البنك',P.bank)+R('عند العملاء (آجل)',P.cust)+R('البضاعة بسعر البيع',P.stock)+R('علينا للموردين',P.sup,1)+R('سلف من الشركاء',P.loans,1)+
+    `<tr><td><b>المال اللي عليه زكاة</b></td><td><b>${M(z.wealth)}</b></td></tr><tr><td><b>الزكاة ٢٫٥٪</b></td><td><b>${M(z.due)}</b></td></tr></tbody>`;
+  const paid=zkRows('paid').sort((a,b)=>b.ts-a.ts);
+  $('#zkLog').innerHTML=`<thead><tr><th>زكاة اتدفعت</th><th>من</th><th>المبلغ</th><th></th></tr></thead><tbody>`+(paid.length?paid.map(x=>`<tr><td><span class="num">${fmtD(x.ts)}</span></td><td>${ACC[accOf(x)]}</td><td>${M(x.amount)}</td><td class="act"><button class="link del" data-zkdel="${x.id}">حذف</button></td></tr>`).join(''):'<tr><td colspan="4" class="empty">لسه مفيش زكاة متسجلة.</td></tr>')+'</tbody>';
+}
+function zkBadge(){const z=zakat();const d=$('#zkDot');d.hidden=z.state==='ok'||z.state==='none';d.className='dot '+(z.state==='due'?'due':'');return z}
+$('#zkForm').addEventListener('submit',e=>{e.preventDefault();const d=$('#zkStart').value;if(!d)return;
+  S.expenses=S.expenses.filter(x=>x.cat!=='__zakat:start'&&x.cat!=='__zakat:nisab');
+  S.expenses.push({id:uid(),ts:new Date(d+'T12:00').getTime(),cat:'__zakat:start',amount:1,note:''});
+  const n=Number($('#zkNisab').value);if(n>0)S.expenses.push({id:uid(),ts:Date.now(),cat:'__zakat:nisab',amount:n,note:''});
+  save();renderZakat();zkBadge();toast('اتحفظ')});
+$('#zkPay').addEventListener('submit',e=>{e.preventDefault();const a=round(Number($('#zpAmt').value));if(!(a>0))return;const ts=ledTs($('#zpDate').value);
+  S.expenses.push({id:uid(),ts,cat:'__zakat:paid',amount:a,note:tagNote('',$('#zpAcc').value)});
+  S.expenses=S.expenses.filter(x=>x.cat!=='__zakat:start');S.expenses.push({id:uid(),ts,cat:'__zakat:start',amount:1,note:''});$('#zkStart').value=dayKey(new Date(ts));
+  save();$('#zpAmt').value='';renderZakat();zkBadge();toast('اتسجلت الزكاة وبدأ حول جديد')});
+$('#zkLog').addEventListener('click',e=>{const b=e.target.closest('[data-zkdel]');if(!b)return;if(b.dataset.sure!=='1'){b.dataset.sure='1';b.textContent='متأكد؟';return}
+  S.expenses=S.expenses.filter(x=>x.id!==b.dataset.zkdel);save();renderZakat()});
 /* Cashbook: every movement of money lands in the cash drawer or the bank account. */
 let cbFilter='';
 function cashBook(){
@@ -1159,6 +1222,7 @@ function cashBook(){
     const D={dep:'راس مال من ',wd:'صرف لـ',pay:pt.kind==='customer'?'دفعة من ':'دفعة لـ'};mv.push({ts:l.ts,desc:D[l.kind]+pt.name+(showNote(l.note)?' · '+showNote(l.note):''),acc:accOf(l),up:inn?l.amount:-l.amount,id:l.id})});
   S.expenses.forEach(x=>{if(!isSys(x)){mv.push({ts:x.ts,desc:'مصروف: '+x.cat+(showNote(x.note)?' · '+showNote(x.note):''),acc:accOf(x),up:-x.amount,id:x.id});return}
     const [k,v]=x.cat.slice(2).split(':');
+    if(k==='zakat'){if(v==='paid')mv.push({ts:x.ts,desc:'زكاة المال',acc:accOf(x),up:-x.amount,id:x.id});return}
     if(k==='loan'){const [t,id]=v.split(':');mv.push({ts:x.ts,desc:(t==='take'?'سلفة من ':'سداد سلفة لـ')+partyName(id)+(showNote(x.note)?' · '+showNote(x.note):''),acc:accOf(x),up:t==='take'?x.amount:-x.amount,id:x.id});return}
     if(k==='open')mv.push({ts:x.ts,desc:'رصيد افتتاحي'+(x.note?' · '+x.note:''),acc:v,up:x.amount,id:x.id,sys:1});
     if(k==='xfer'){const [f,t]=v.split('>');mv.push({ts:x.ts,desc:'تحويل إلى '+ACC[t]+(x.note?' · '+x.note:''),acc:f,up:-x.amount,id:x.id,sys:1});mv.push({ts:x.ts+1,desc:'تحويل من '+ACC[f]+(x.note?' · '+x.note:''),acc:t,up:x.amount,id:x.id,sys:1})}});
@@ -1264,6 +1328,7 @@ function renderHome(){
   const dayTot=sum(daySales,s=>s.total),monExp=sum(realExp().filter(x=>dayKey(new Date(x.ts)).startsWith(mk)),x=>x.amount);
   let owedUs=0,weOwe=0;S.parties.forEach(pt=>{const b=statement(pt).bal;if(pt.kind==='customer'&&b>0)owedUs+=b;if(pt.kind==='supplier'&&b>0)weOwe+=b});
   const low=S.products.filter(p=>p.stock<=p.min).sort((a,b)=>a.stock-b.stock),cb=cashBook().bal;
+  {const z=zkBadge();$('#hZakat').hidden=z.state==='none';$('#hZakat').className='card zk '+z.state;$('#hZakat').innerHTML=zkCard(z,true)+(z.state==='none'?'':'<div><button class="link" data-go="acct" data-k="zakat" style="padding:4px 0">افتح صفحة الزكاة</button></div>')}
   $('#hDate').textContent=now.toLocaleDateString('ar',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   $('#hSub').textContent=daySales.length+' فاتورة النهارده · '+low.length+' صنف قرب يخلص';
   $('#hTotal').innerHTML=M(dayTot);
@@ -1287,7 +1352,7 @@ function renderHome(){
   $('#hInv').innerHTML=S.sales.slice(-6).reverse().map(s=>`<div class="li"><div>فاتورة <span class="num">${s.no}</span><small>${new Date(s.ts).toLocaleTimeString('ar',{hour:'2-digit',minute:'2-digit'})} · ${METH[s.method]}${s.party?' · '+esc(partyName(s.party)):''}</small></div><b>${M(s.total)}</b></div>`).join('')||'<div class="empty">لسه مفيش فواتير</div>';
 }
 function renderAll(){
-  $('#storeName').textContent=S.settings.store;
+  $('#storeName').textContent=S.settings.store;if(isAdmin())try{zkBadge()}catch(e){}
   $('#demoBanner').hidden=!S.demo||!isAdmin();
   if(tab==='home')renderHome();if(tab==='pos')renderPOS();if(tab==='stock')renderStock();if(tab==='report')renderReport();if(tab==='acct')renderAcct();if(tab==='settings'){renderSettings();renderStaff()}
 }
