@@ -439,7 +439,17 @@ body.booting .main>header::after{content:"";position:absolute;inset:auto 0 0;hei
           <label class="wide">ملاحظة (اختياري)<input class="field" id="dNote"></label>
           <button class="btn gold">تسجيل</button>
         </div></form>
-      <div class="card psec"><div class="ph"><b>اللي اتدفع للشركاء</b><span><select class="field sm" data-filter="dist"></select></span></div><div class="tbl-wrap"><table id="distTbl"></table></div></div>
+      <form class="card psec" id="lnForm"><div class="ph"><b>سلف من الشركاء</b><small>غير راس المال، ومش بتغيّر النسبة</small></div>
+        <div class="pform">
+          <label>الشريك<select class="field" id="lnPart" required></select></label>
+          <label>الحركة<select class="field" id="lnKind"><option value="take">سلفة من الشريك للمحل</option><option value="payback">سداد سلفة للشريك</option></select></label>
+          <label>المبلغ<input class="field num" id="lnAmt" type="number" step="0.01" min="0.01" required inputmode="decimal"></label>
+          <label>في/من<select class="field" id="lnAcc"><option value="cash">الكاش</option><option value="bank">البنك</option></select></label>
+          <label>التاريخ<input class="field num" id="lnDate" type="date"></label>
+          <label class="wide">ملاحظة (اختياري)<input class="field" id="lnNote"></label>
+          <button class="btn gold">تسجيل</button>
+        </div></form>
+      <div class="card psec"><div class="ph"><b>الحركات مع الشركاء</b><span><select class="field sm" data-filter="dist"></select></span></div><div class="tbl-wrap"><table id="distTbl"></table></div></div>
     </div>
     <div id="cbBox" hidden>
       <div class="dk cb2" id="cbCards"></div>
@@ -1057,6 +1067,7 @@ function statement(pt){
   if(cust)S.sales.filter(s=>s.party===pt.id).forEach(s=>{ent.push({ts:s.ts,desc:'فاتورة رقم '+s.no+(s.method==='credit'?'':' ('+METH[s.method]+')'),up:s.total,sale:s.id});if(s.method!=='credit')ent.push({ts:s.ts+1,desc:'مدفوع مع الفاتورة',up:-s.total})});
   const LD={buy:'مشتريات',dep:'تمويل من الشريك',wd:'اتصرف له من الربح',pay:cust?'دفعة من العميل':'دفعة للمورد'};
   S.ledger.filter(l=>l.party===pt.id).forEach(l=>ent.push({ts:l.ts,desc:LD[l.kind]+(l.kind!=='buy'?' ('+ACC[accOf(l)]+')':'')+(showNote(l.note)?' · '+showNote(l.note):''),up:l.kind==='buy'||l.kind==='dep'?l.amount:-l.amount,id:l.id}));
+  if(pt.kind==='partner')loanRows(pt.id).forEach(r=>ent.push({ts:r.ts,desc:(r.t==='take'?'سلفة منه للمحل':'سداد سلفة له')+' ('+ACC[accOf(r)]+')'+(showNote(r.note)?' · '+showNote(r.note):''),up:r.t==='take'?r.amount:-r.amount,ln:r.id}));
   ent.sort((a,b)=>a.ts-b.ts);let bal=pt.opening||0;ent.forEach(x=>{bal=round(bal+x.up);x.bal=bal});
   return{ent,bal};
 }
@@ -1089,25 +1100,28 @@ function partnerData(){
   const cap=p=>round((p.opening||0)+L('dep').filter(l=>l.party===p.id).reduce((a,l)=>a+l.amount,0));
   const totF=round(ps.reduce((a,p)=>a+cap(p),0));
   const rows=ps.map(p=>{const f=cap(p),pct=totF>0?f/totF:0,share=round(Math.max(0,net)*pct),paid=round(L('wd').filter(l=>l.party===p.id).reduce((a,l)=>a+l.amount,0));
-    return{p,f,pct,share,paid,rem:round(share-paid)}});
+    const loan=round(loanRows(p.id).reduce((a,r)=>a+(r.t==='take'?r.amount:-r.amount),0));
+    return{p,f,pct,share,paid,rem:round(share-paid),loan}});
   return{ps,net,prof,exp,totF,rows,L,cap};
 }
+const loanRows=pid=>S.expenses.filter(x=>String(x.cat).startsWith('__loan:')).map(x=>{const [t,id]=x.cat.slice(7).split(':');return{...x,t,pid:id}}).filter(r=>r.pid===pid);
 const pctS=x=>`<span class="num">${(x*100).toLocaleString('en-US',{maximumFractionDigits:1})}%</span>`;
 function partTables(d){
   const nm=id=>esc(partyName(id)),E=(n,t)=>`<tr><td colspan="${n}" class="empty">${t}</td></tr>`;
-  const sum=`<thead><tr><th>الشريك</th><th>راس المال</th><th>النسبة</th><th>نصيبه من الربح</th><th>اتصرف له</th><th>الباقي له</th></tr></thead><tbody>`+
-    (d.rows.length?d.rows.map(r=>`<tr><td><button class="link" data-party="${r.p.id}">${esc(r.p.name)}</button></td><td>${M(r.f)}</td><td>${pctS(r.pct)}</td><td class="hl">${M(r.share)}</td><td>${M(r.paid)}</td><td class="rem">${M(r.rem)}</td></tr>`).join('')+
-      (d.rows.length>1?`<tr><td><b>الإجمالي</b></td><td><b>${M(d.totF)}</b></td><td>${pctS(d.totF?1:0)}</td><td class="hl">${M(d.rows.reduce((a,r)=>a+r.share,0))}</td><td>${M(d.rows.reduce((a,r)=>a+r.paid,0))}</td><td class="rem">${M(d.rows.reduce((a,r)=>a+r.rem,0))}</td></tr>`:''):E(6,'أضف الشركاء من الفورم اللي فوق واكتب راس مال كل واحد'))+'</tbody>';
-  const d1=d.L('wd').filter(l=>!pFilter.dist||l.party===pFilter.dist).sort((a,b)=>b.ts-a.ts);
-  const dist=`<thead><tr><th>الشريك</th><th>المبلغ</th><th>التاريخ</th><th>ملاحظة</th></tr></thead><tbody>`+
-    (d1.length?d1.map(l=>`<tr><td>${nm(l.party)}</td><td class="hl">${M(l.amount)}</td><td><span class="num">${fmtD(l.ts)}</span></td><td>${esc(l.note||'')}</td></tr>`).join(''):E(4,'لسه مفيش دفعات'))+'</tbody>';
+  const sum=`<thead><tr><th>الشريك</th><th>راس المال</th><th>النسبة</th><th>نصيبه من الربح</th><th>اتصرف له</th><th>الباقي له</th><th>سلفة له</th></tr></thead><tbody>`+
+    (d.rows.length?d.rows.map(r=>`<tr><td><button class="link" data-party="${r.p.id}">${esc(r.p.name)}</button></td><td>${M(r.f)}</td><td>${pctS(r.pct)}</td><td class="hl">${M(r.share)}</td><td>${M(r.paid)}</td><td class="rem">${M(r.rem)}</td><td>${r.loan?M(r.loan):'—'}</td></tr>`).join('')+
+      (d.rows.length>1?`<tr><td><b>الإجمالي</b></td><td><b>${M(d.totF)}</b></td><td>${pctS(d.totF?1:0)}</td><td class="hl">${M(d.rows.reduce((a,r)=>a+r.share,0))}</td><td>${M(d.rows.reduce((a,r)=>a+r.paid,0))}</td><td class="rem">${M(d.rows.reduce((a,r)=>a+r.rem,0))}</td><td>${M(d.rows.reduce((a,r)=>a+r.loan,0))}</td></tr>`:''):E(7,'أضف الشركاء من الفورم اللي فوق واكتب راس مال كل واحد'))+'</tbody>';
+  const d1=[...d.L('wd').map(l=>({party:l.party,amount:l.amount,ts:l.ts,note:l.note,what:'من الربح'})),...d.ps.flatMap(p=>loanRows(p.id).map(r=>({party:p.id,amount:r.amount,ts:r.ts,note:r.note,what:r.t==='take'?'سلفة منه':'سداد سلفة له'})))].filter(l=>!pFilter.dist||l.party===pFilter.dist).sort((a,b)=>b.ts-a.ts);
+  const dist=`<thead><tr><th>الشريك</th><th>البيان</th><th>المبلغ</th><th>التاريخ</th><th>ملاحظة</th></tr></thead><tbody>`+
+    (d1.length?d1.map(l=>`<tr><td>${nm(l.party)}</td><td>${l.what}</td><td class="hl">${M(l.amount)}</td><td><span class="num">${fmtD(l.ts)}</span></td><td>${esc(showNote(l.note))}</td></tr>`).join(''):E(5,'لسه مفيش دفعات'))+'</tbody>';
   return{sum,dist};
 }
 function renderPartners(){
   const d=partnerData(),t=partTables(d);
   $('#pNet').innerHTML=`<div class="netv ${d.net<0?'neg':''}">${M(d.net)}</div><div class="netd">ربح المبيعات ${M(d.prof)} − المصروفات ${M(d.exp)}</div>`;
   const opts=(all)=>(all?`<option value="">${all}</option>`:'')+d.ps.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('');
-  {const v=$('#dPart').value;$('#dPart').innerHTML=d.ps.length?opts(''):'<option value="">أضف شريك الأول</option>';if(v)$('#dPart').value=v}
+  ['#dPart','#lnPart'].forEach(q=>{const v=$(q).value;$(q).innerHTML=d.ps.length?opts(''):'<option value="">أضف شريك الأول</option>';if(v)$(q).value=v});
+  if(!$('#lnDate').value)$('#lnDate').value=today();
   document.querySelectorAll('#partBox [data-filter]').forEach(sel=>{sel.innerHTML=opts('كل الشركاء');sel.value=pFilter[sel.dataset.filter]});
   if(!$('#dDate').value)$('#dDate').value=today();
   $('#sumTbl').innerHTML=t.sum;$('#distTbl').innerHTML=t.dist;
@@ -1118,6 +1132,8 @@ function renderPartners(){
 const ledTs=v=>{if(!v||v===today())return Date.now();return new Date(v+'T12:00').getTime()};
 $('#distForm').addEventListener('submit',e=>{e.preventDefault();const a=round(Number($('#dAmt').value));if(!$('#dPart').value||!(a>0))return;
   S.ledger.push({id:uid(),party:$('#dPart').value,ts:ledTs($('#dDate').value),kind:'wd',amount:a,note:$('#dNote').value.trim()});save();$('#dAmt').value='';$('#dNote').value='';renderPartners();toast('اتسجلت')});
+$('#lnForm').addEventListener('submit',e=>{e.preventDefault();const a=round(Number($('#lnAmt').value));if(!$('#lnPart').value||!(a>0))return;
+  S.expenses.push({id:uid(),ts:ledTs($('#lnDate').value),cat:'__loan:'+$('#lnKind').value+':'+$('#lnPart').value,amount:a,note:tagNote($('#lnNote').value.trim(),$('#lnAcc').value)});save();$('#lnAmt').value='';$('#lnNote').value='';renderPartners();toast('اتسجلت')});
 $('#partBox').addEventListener('change',e=>{const f=e.target.closest('[data-filter]');if(f){pFilter[f.dataset.filter]=f.value;renderPartners()}});
 $('#partBox').addEventListener('click',e=>{
   const pt=e.target.closest('[data-party]');if(pt)return showStatement(pt.dataset.party);
@@ -1143,6 +1159,7 @@ function cashBook(){
     const D={dep:'راس مال من ',wd:'صرف لـ',pay:pt.kind==='customer'?'دفعة من ':'دفعة لـ'};mv.push({ts:l.ts,desc:D[l.kind]+pt.name+(showNote(l.note)?' · '+showNote(l.note):''),acc:accOf(l),up:inn?l.amount:-l.amount,id:l.id})});
   S.expenses.forEach(x=>{if(!isSys(x)){mv.push({ts:x.ts,desc:'مصروف: '+x.cat+(showNote(x.note)?' · '+showNote(x.note):''),acc:accOf(x),up:-x.amount,id:x.id});return}
     const [k,v]=x.cat.slice(2).split(':');
+    if(k==='loan'){const [t,id]=v.split(':');mv.push({ts:x.ts,desc:(t==='take'?'سلفة من ':'سداد سلفة لـ')+partyName(id)+(showNote(x.note)?' · '+showNote(x.note):''),acc:accOf(x),up:t==='take'?x.amount:-x.amount,id:x.id});return}
     if(k==='open')mv.push({ts:x.ts,desc:'رصيد افتتاحي'+(x.note?' · '+x.note:''),acc:v,up:x.amount,id:x.id,sys:1});
     if(k==='xfer'){const [f,t]=v.split('>');mv.push({ts:x.ts,desc:'تحويل إلى '+ACC[t]+(x.note?' · '+x.note:''),acc:f,up:-x.amount,id:x.id,sys:1});mv.push({ts:x.ts+1,desc:'تحويل من '+ACC[f]+(x.note?' · '+x.note:''),acc:t,up:x.amount,id:x.id,sys:1})}});
   mv.sort((a,b)=>a.ts-b.ts);const bal={cash:0,bank:0};mv.forEach(m=>{bal[m.acc]=round(bal[m.acc]+m.up);m.bal=bal[m.acc]});
@@ -1217,7 +1234,7 @@ function showStatement(id){
     <div class="hd"><img class="logo" src="${LOGO}" alt=""><b>كشف حساب ${KIND[pt.kind]}</b><div>${esc(pt.name)}${pt.phone?' · <span class="num">'+esc(pt.phone)+'</span>':''}</div></div>
     <table><thead><tr><th>البيان</th><th>المبلغ</th><th style="text-align:end">الرصيد</th></tr></thead><tbody>
     ${pt.opening?`<tr><td>رصيد سابق</td><td class="num">${money(pt.opening)}</td><td style="text-align:end" class="num">${money(pt.opening)}</td></tr>`:''}
-    ${ent.map(x=>`<tr><td style="white-space:normal">${x.sale?`<button class="link" data-sale="${x.sale}">${esc(x.desc)}</button>`:esc(x.desc)}<div class="unit num">${fmtD(x.ts)}${x.id?` <button class="link del" data-led="${x.id}">حذف</button>`:''}</div></td><td class="num" style="color:${x.up>0?'inherit':'var(--accent)'}">${x.up>0?'+':'−'}${money(Math.abs(x.up))}</td><td style="text-align:end" class="num">${money(x.bal)}</td></tr>`).join('')||'<tr><td colspan="3" class="empty">لا توجد حركات بعد.</td></tr>'}
+    ${ent.map(x=>`<tr><td style="white-space:normal">${x.sale?`<button class="link" data-sale="${x.sale}">${esc(x.desc)}</button>`:esc(x.desc)}<div class="unit num">${fmtD(x.ts)}${x.id?` <button class="link del" data-led="${x.id}">حذف</button>`:x.ln?` <button class="link del" data-ln="${x.ln}">حذف</button>`:''}</div></td><td class="num" style="color:${x.up>0?'inherit':'var(--accent)'}">${x.up>0?'+':'−'}${money(Math.abs(x.up))}</td><td style="text-align:end" class="num">${money(x.bal)}</td></tr>`).join('')||'<tr><td colspan="3" class="empty">لا توجد حركات بعد.</td></tr>'}
     </tbody></table>
     <div class="ft sums" style="margin-top:8px"><span class="grand">الرصيد (${balWord(pt,bal)})</span><span class="grand">${M(Math.abs(bal))}</span></div>
     <form id="payForm" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><input class="field num" id="payAmt" type="number" step="0.01" min="0.01" required placeholder="${cust?'مبلغ استلمته منه':pt.kind==='partner'?'المبلغ':'مبلغ دفعته له'}" style="flex:1;min-width:120px"><select class="field" id="payAcc" style="flex:0 0 auto"><option value="cash">كاش</option><option value="bank">بنك</option></select><input class="field" id="payNote" placeholder="ملاحظة (اختياري)" style="flex:1;min-width:120px">${pt.kind==='partner'?'<button class="btn primary" value="dep">إيداع</button><button class="btn" value="wd">سحب</button>':'<button class="btn primary" value="pay">تسجيل دفعة</button>'}</form>
@@ -1230,12 +1247,12 @@ function showStatement(id){
   $('#payForm').onsubmit=e=>{e.preventDefault();const a=round(Number($('#payAmt').value));if(!(a>0))return;
     const k=(e.submitter&&e.submitter.value)||'pay';S.ledger.push({id:uid(),party:pt.id,ts:Date.now(),kind:k,amount:a,note:tagNote($('#payNote').value.trim(),$('#payAcc').value)});save();showStatement(pt.id);toast(k==='dep'?'اتسجل الإيداع':k==='wd'?'اتسجل السحب':'اتسجلت الدفعة')};
   $('#ov').querySelector('tbody').onclick=e=>{const sl=e.target.closest('[data-sale]');if(sl){const s=S.sales.find(x=>x.id===sl.dataset.sale);if(s)showReceipt(s);return}
-    const d=e.target.closest('[data-led]');if(!d)return;if(d.dataset.sure!=='1'){d.dataset.sure='1';d.textContent='متأكد؟';return}
-    S.ledger=S.ledger.filter(l=>l.id!==d.dataset.led);save();showStatement(pt.id)};
+    const d=e.target.closest('[data-led],[data-ln]');if(!d)return;if(d.dataset.sure!=='1'){d.dataset.sure='1';d.textContent='متأكد؟';return}
+    if(d.dataset.ln)S.expenses=S.expenses.filter(x=>x.id!==d.dataset.ln);else S.ledger=S.ledger.filter(l=>l.id!==d.dataset.led);save();showStatement(pt.id)};
   $('#ptDel').onclick=e=>{const b=e.currentTarget;
     if(cust&&S.sales.some(s=>s.party===pt.id))return toast('العميل عليه فواتير، احذفها أو سيبه');
     if(b.dataset.sure!=='1'){b.dataset.sure='1';b.textContent='متأكد؟ هتتمسح حركاته';return}
-    S.ledger=S.ledger.filter(l=>l.party!==pt.id);S.parties=S.parties.filter(p=>p.id!==pt.id);save();close();toast('اتحذف')};
+    S.ledger=S.ledger.filter(l=>l.party!==pt.id);S.expenses=S.expenses.filter(x=>!String(x.cat).endsWith(':'+pt.id));S.parties=S.parties.filter(p=>p.id!==pt.id);save();close();toast('اتحذف')};
 }
 
 /* Home: today at a glance, money owed both ways, 6-month sales vs expenses */
