@@ -263,6 +263,7 @@ body.booting .main>header::after{content:"";position:absolute;inset:auto 0 0;hei
 .zk{padding:16px;border-radius:14px;margin-bottom:14px;border-inline-start:6px solid var(--ok)}
 .zk.soon{border-inline-start-color:var(--warn);background:var(--warn-soft)}.zk.due{border-inline-start-color:var(--bad);background:var(--bad-soft)}
 .zk b{display:block;font-size:17px}.zk strong{font-family:var(--f-display);font-size:26px;display:block;margin:4px 0}.zk small{color:var(--muted);font-size:14px}
+tr.zrow{cursor:pointer}tr.zrow:active{background:var(--accent-soft)}.zgo{color:var(--accent);font-weight:700;margin-inline-start:4px}
 #tabs .dot{width:10px;height:10px;border-radius:50%;margin-inline-start:auto;background:var(--warn)}#tabs .dot.due{background:var(--bad)}
 @media (max-width:600px){#acctKind{flex-wrap:wrap}#acctKind button{flex:1 1 30%}}
 @media (max-width:600px){.dkc{flex-direction:column;gap:8px;padding:14px}.dkc .ib{width:38px;height:38px}}
@@ -1198,16 +1199,30 @@ function zkCard(z,home){
 function renderZakat(){
   const z=zakat();$('#zkCard').className='card zk '+z.state;$('#zkCard').innerHTML=zkCard(z);
   if(z.start&&!$('#zkStart').value)$('#zkStart').value=dayKey(new Date(z.start));const F=(id,v)=>{if(v&&!$(id).value)$(id).value=v};F('#zkGold',z.goldP);F('#zkExtra',z.parts.extra);F('#zkBad',z.parts.bad);if(!$('#zpDate').value)$('#zpDate').value=today();
-  const P=z.parts,R=(l,v,neg)=>`<tr><td>${l}</td><td>${neg?'− ':''}${M(v)}</td></tr>`;
+  const P=z.parts,R=(l,v,neg,d)=>d?`<tr class="zrow" data-zd="${d}"><td>${l} <span class="zgo">›</span></td><td>${neg?'− ':''}${M(v)}</td></tr>`:`<tr><td>${l}</td><td>${neg?'− ':''}${M(v)}</td></tr>`;
   const H=t=>`<tr><th colspan="2" style="text-align:start;background:var(--sunk)">${t}</th></tr>`;
   $('#zkTbl').innerHTML=`<thead><tr><th>البند (زي حاسبة بيت الشارقة الخيري)</th><th>القيمة</th></tr></thead><tbody>`+
-    H('الأموال السائلة')+R('أموال سائلة (الكاش)',P.cash)+R('أموال في حسابات جارية (البنك)',P.bank)+(P.extra?R('أموال تانية برّه البرنامج',P.extra):'')+
-    H('التجارة')+R('بضائع قابلة للبيع',P.stock)+R('مبالغ مستحقة التحصيل (عند العملاء)',P.cust)+(P.bad?R('ديون معدومة',P.bad,1):'')+R('مبالغ مستحقة الدفع (للموردين)',P.sup,1)+R('قروض مقدمة من الشركاء',P.loans,1)+
+    H('الأموال السائلة')+R('أموال سائلة (الكاش)',P.cash,0,'cash')+R('أموال في حسابات جارية (البنك)',P.bank,0,'bank')+(P.extra?R('أموال تانية برّه البرنامج',P.extra):'')+
+    H('التجارة')+R('بضائع قابلة للبيع',P.stock,0,'stock')+R('مبالغ مستحقة التحصيل (عند العملاء)',P.cust,0,'cust')+(P.bad?R('ديون معدومة',P.bad,1):'')+R('مبالغ مستحقة الدفع (للموردين)',P.sup,1,'sup')+R('قروض مقدمة من الشركاء',P.loans,1,'loans')+
     `<tr><td><b>وعاء الزكاة</b></td><td><b>${M(z.wealth)}</b></td></tr>`+(z.nisab?`<tr><td>النصاب (٨٥ جرام دهب)</td><td>${M(z.nisab)}${z.below?' <span class="pill low">أقل من النصاب</span>':' <span class="pill ok">بلغ النصاب</span>'}</td></tr>`:'')+
     `<tr><td><b>الزكاة ربع العشر (٢٫٥٪)</b></td><td><b>${M(z.due)}</b></td></tr></tbody>`;
   const paid=zkRows('paid').sort((a,b)=>b.ts-a.ts);
   $('#zkLog').innerHTML=`<thead><tr><th>زكاة اتدفعت</th><th>من</th><th>المبلغ</th><th></th></tr></thead><tbody>`+(paid.length?paid.map(x=>`<tr><td><span class="num">${fmtD(x.ts)}</span></td><td>${ACC[accOf(x)]}</td><td>${M(x.amount)}</td><td class="act"><button class="link del" data-zkdel="${x.id}">حذف</button></td></tr>`).join(''):'<tr><td colspan="4" class="empty">لسه مفيش زكاة متسجلة.</td></tr>')+'</tbody>';
 }
+/* Tapping a line in the zakat table shows what the number is made of, without leaving the page. */
+function zkDetail(k){
+  let title='',rows=[],tot=0;const row=(a,b,c)=>rows.push([a,b,c]);
+  if(k==='stock'){title='بضائع قابلة للبيع (المخزون × سعر البيع)';S.products.filter(p=>p.stock>0).sort((a,b)=>b.stock*b.price-a.stock*a.price).forEach(p=>{const v=p.stock*p.price;tot+=v;row(p.name,fq(p.stock,p.unit)+' × '+money(p.price),v)})}
+  else if(k==='cust'||k==='sup'){title=k==='cust'?'مبالغ مستحقة التحصيل (عند العملاء)':'مبالغ مستحقة الدفع (للموردين)';S.parties.filter(p=>p.kind===(k==='cust'?'customer':'supplier')).map(p=>({p,b:statement(p).bal})).filter(x=>x.b>0).sort((a,b)=>b.b-a.b).forEach(x=>{tot+=x.b;row(x.p.name,'',x.b)})}
+  else if(k==='loans'){title='قروض مقدمة من الشركاء';S.parties.filter(p=>p.kind==='partner').forEach(p=>{const b=loanRows(p.id).reduce((c,r)=>c+(r.t==='take'?r.amount:-r.amount),0);if(b>0){tot+=b;row(p.name,'',b)}})}
+  else{const cb=cashBook();title=k==='cash'?'أموال سائلة (الكاش)':'أموال في حسابات جارية (البنك)';tot=cb.bal[k];cb.mv.filter(m=>m.acc===k).sort((a,b)=>b.ts-a.ts).slice(0,15).forEach(m=>row(m.desc,fmtD(m.ts),m.up))}
+  const body=rows.length?rows.map(([a,b,c])=>`<tr><td style="white-space:normal">${esc(a)}${b?`<div class="unit num">${b}</div>`:''}</td><td style="text-align:end" class="num ${c<0?'neg':''}">${money(c)}</td></tr>`).join(''):'<tr><td colspan="2" class="empty">مفيش حاجة هنا دلوقتي.</td></tr>';
+  $('#modal').innerHTML=`<div class="overlay" id="ov"><div class="receipt" role="dialog" aria-label="${esc(title)}" dir="rtl"><div class="hd"><b>${esc(title)}</b>${k==='cash'||k==='bank'?'<div class="unit">آخر الحركات</div>':''}</div>
+    <table><tbody>${body}</tbody><tfoot><tr><td><b>الإجمالي</b></td><td style="text-align:end" class="num"><b>${money(tot)}</b></td></tr></tfoot></table>
+    <div class="acts" style="margin-top:14px"><button class="btn primary" type="button" id="zdClose" style="width:100%">تمام</button></div></div></div>`;
+  const close=()=>{$('#modal').innerHTML=''};$('#zdClose').onclick=close;$('#ov').addEventListener('click',e=>{if(e.target.id==='ov')close()});
+}
+$('#zkTbl').addEventListener('click',e=>{const r=e.target.closest('tr[data-zd]');if(r)zkDetail(r.dataset.zd)});
 function zkBadge(){const z=zakat();const d=$('#zkDot');d.hidden=z.state==='ok'||z.state==='none';d.className='dot '+(z.state==='due'?'due':'');return z}
 $('#zkForm').addEventListener('submit',e=>{e.preventDefault();const d=$('#zkStart').value;if(!d)return;
   S.expenses=S.expenses.filter(x=>!['__zakat:start','__zakat:nisab','__zakat:gold','__zakat:extra','__zakat:bad'].includes(x.cat));
