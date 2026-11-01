@@ -263,6 +263,8 @@ body.booting .main>header::after{content:"";position:absolute;inset:auto 0 0;hei
 .zk{padding:16px;border-radius:14px;margin-bottom:14px;border-inline-start:6px solid var(--ok)}
 .zk.soon{border-inline-start-color:var(--warn);background:var(--warn-soft)}.zk.due{border-inline-start-color:var(--bad);background:var(--bad-soft)}
 .zk b{display:block;font-size:17px}.zk strong{font-family:var(--f-display);font-size:26px;display:block;margin:4px 0}.zk small{color:var(--muted);font-size:14px}
+tr.zpaid td{background:var(--ok-soft)}.zdue{padding:10px 14px;background:var(--bad-soft);color:var(--bad);font-weight:700;border-radius:10px;margin-bottom:8px}
+#zkTbl td:first-child{white-space:normal}#zkTbl td:last-child{white-space:nowrap}
 tr.zrow{cursor:pointer}tr.zrow:active{background:var(--accent-soft)}.zgo{color:var(--accent);font-weight:700;margin-inline-start:4px}
 #tabs .dot{width:10px;height:10px;border-radius:50%;margin-inline-start:auto;background:var(--warn)}#tabs .dot.due{background:var(--bad)}
 @media (max-width:600px){#acctKind{flex-wrap:wrap}#acctKind button{flex:1 1 30%}}
@@ -487,7 +489,7 @@ tr.zrow{cursor:pointer}tr.zrow:active{background:var(--accent-soft)}.zgo{color:v
         <label>التاريخ<input class="field num" id="zpDate" type="date"></label>
         <div style="display:flex;gap:8px;align-items:end"><button class="btn primary" style="flex:1">تسجيل وبدء حول جديد</button></div>
       </form>
-      <div class="card tbl-wrap"><table id="zkLog"></table></div>
+      <div class="card tbl-wrap"><div class="zdue" id="zkDue" hidden></div><table id="zkLog"></table></div>
     </div>
     <div id="expBox" hidden>
       <form class="add card" id="expForm" style="margin-bottom:14px">
@@ -1194,7 +1196,8 @@ function zakat(){
 function zkCard(z,home){
   if(z.state==='none')return home?'':'<b>حدد بداية الحول</b><small>اكتب تاريخ أول ما كان معاك مال يبلغ النصاب، وهنحسبلك لما تعدي سنة هجرية (٣٥٤ يوم).</small>';
   const t={ok:'لسه على الحول '+z.days+' يوم',soon:'فاضل '+z.days+' يوم على الحول',due:z.days===0?'الحول حلّ النهارده':'الحول حلّ من '+(-z.days)+' يوم'}[z.state];
-  return `<b>الزكاة المستحقة ${z.state==='due'?'دلوقتي':'لما يحل الحول'}</b><strong>${M(z.due)}</strong><small>${t} · الحول يحلّ <span class="num">${fmtD(z.end)}</span> · المال اللي عليه زكاة ${M(z.wealth)}${z.below?' (أقل من النصاب، مفيش زكاة واجبة)':''}</small>`;
+  const lp=zkRows('paid').sort((a,b)=>b.ts-a.ts)[0];const pill=z.state==='due'?'<span class="pill out">مستحقة السداد · لسه ما اتدفعتش</span>':lp?`<span class="pill ok">آخر زكاة مدفوعة <span class="num">${fmtD(lp.ts)}</span> · ${M(lp.amount)}</span>`:'';
+  return `<b>الزكاة المستحقة ${z.state==='due'?'دلوقتي':'لما يحل الحول'}</b><strong>${M(z.due)}</strong>${pill?'<div style="margin:2px 0 6px">'+pill+'</div>':''}<small>${t} · الحول يحلّ <span class="num">${fmtD(z.end)}</span> · المال اللي عليه زكاة ${M(z.wealth)}${z.below?' (أقل من النصاب، مفيش زكاة واجبة)':''}</small>`;
 }
 function renderZakat(){
   const z=zakat();$('#zkCard').className='card zk '+z.state;$('#zkCard').innerHTML=zkCard(z);
@@ -1207,7 +1210,8 @@ function renderZakat(){
     `<tr><td><b>وعاء الزكاة</b></td><td><b>${M(z.wealth)}</b></td></tr>`+(z.nisab?`<tr><td>النصاب (٨٥ جرام دهب)</td><td>${M(z.nisab)}${z.below?' <span class="pill low">أقل من النصاب</span>':' <span class="pill ok">بلغ النصاب</span>'}</td></tr>`:'')+
     `<tr><td><b>الزكاة ربع العشر (٢٫٥٪)</b></td><td><b>${M(z.due)}</b></td></tr></tbody>`;
   const paid=zkRows('paid').sort((a,b)=>b.ts-a.ts);
-  $('#zkLog').innerHTML=`<thead><tr><th>زكاة اتدفعت</th><th>من</th><th>المبلغ</th><th></th></tr></thead><tbody>`+(paid.length?paid.map(x=>`<tr><td><span class="num">${fmtD(x.ts)}</span></td><td>${ACC[accOf(x)]}</td><td>${M(x.amount)}</td><td class="act"><button class="link del" data-zkdel="${x.id}">حذف</button></td></tr>`).join(''):'<tr><td colspan="4" class="empty">لسه مفيش زكاة متسجلة.</td></tr>')+'</tbody>';
+  $('#zkDue').hidden=z.state!=='due';$('#zkDue').innerHTML=`<span class="pill out">مستحقة السداد</span> زكاة الحول الحالي ${M(z.due)} لسه ما اتدفعتش`;
+  $('#zkLog').innerHTML=`<thead><tr><th>زكاة اتدفعت</th><th>من</th><th>المبلغ</th><th></th></tr></thead><tbody>`+(paid.length?paid.map(x=>`<tr class="zpaid"><td><span class="num">${fmtD(x.ts)}</span> <span class="pill ok">مدفوعة</span></td><td>${ACC[accOf(x)]}</td><td>${M(x.amount)}</td><td class="act"><button class="link del" data-zkdel="${x.id}">حذف</button></td></tr>`).join(''):'<tr><td colspan="4" class="empty">لسه مفيش زكاة متسجلة.</td></tr>')+'</tbody>';
 }
 /* Tapping a line in the zakat table shows what the number is made of, without leaving the page. */
 function zkDetail(k){
