@@ -116,7 +116,7 @@ td.act{text-align:end}
 .link.del{color:var(--bad)}
 .pill{display:inline-block;border-radius:999px;padding:1px 10px;font-size:14px;background:var(--accent-soft);color:var(--accent)}
 .pill.low{background:var(--warn-soft);color:var(--warn)}
-.pill.out{background:var(--bad-soft);color:var(--bad)}
+.pill.out{background:var(--bad-soft);color:var(--bad)}.pill.ok{background:var(--ok-soft);color:var(--ok)}
 form.add{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;padding:14px;margin-bottom:14px;align-items:end}
 form.add label{display:flex;flex-direction:column;gap:4px;font-size:14.5px;color:var(--muted)}
 form.add .field{padding:8px 10px}
@@ -474,7 +474,9 @@ body.booting .main>header::after{content:"";position:absolute;inset:auto 0 0;hei
       <div class="card zk" id="zkCard"></div>
       <form class="add card" id="zkForm" style="margin-bottom:14px">
         <label>بداية الحول (تاريخ أول ما ملكت النصاب)<input class="field num" id="zkStart" type="date" required></label>
-        <label>النصاب (اختياري، قيمة ٨٥ جرام دهب)<input class="field num" id="zkNisab" type="number" step="0.01" min="0" inputmode="decimal" placeholder="سيبه فاضي لو مش عارفه"></label>
+        <label>سعر جرام الدهب عيار ٢٤ النهارده (للنصاب = ٨٥ جرام)<input class="field num" id="zkGold" type="number" step="0.01" min="0" inputmode="decimal" placeholder="مثلاً 300"></label>
+        <label>أموال تانية برّه البرنامج (دهب، حسابات تانية)<input class="field num" id="zkExtra" type="number" step="0.01" min="0" inputmode="decimal" placeholder="0"></label>
+        <label>ديون معدومة (مش هتتحصل)<input class="field num" id="zkBad" type="number" step="0.01" min="0" inputmode="decimal" placeholder="0"></label>
         <div style="display:flex;gap:8px;align-items:end"><button class="btn primary" style="flex:1">حفظ</button></div>
       </form>
       <div class="card tbl-wrap" style="margin-bottom:14px"><table id="zkTbl"></table></div>
@@ -1178,14 +1180,15 @@ function printPartners(){
 const HAWL=354*86400000;
 const zkRows=t=>S.expenses.filter(x=>x.cat==='__zakat:'+t);
 function zakat(){
-  const st=zkRows('start').sort((a,b)=>b.ts-a.ts)[0],nis=zkRows('nisab').sort((a,b)=>b.ts-a.ts)[0],cb=cashBook().bal;
+  const last=t=>zkRows(t).sort((a,b)=>b.ts-a.ts)[0],st=last('start'),nis=last('nisab'),gold=last('gold'),extra=last('extra'),bad=last('bad'),cb=cashBook().bal;
   let cust=0,sup=0;S.parties.forEach(pt=>{const b=statement(pt).bal;if(pt.kind==='customer'&&b>0)cust+=b;if(pt.kind==='supplier'&&b>0)sup+=b});
   const stock=S.products.reduce((a,p)=>a+Math.max(0,p.stock)*p.price,0);
   const loans=S.parties.filter(p=>p.kind==='partner').reduce((a,p)=>a+loanRows(p.id).reduce((c,r)=>c+(r.t==='take'?r.amount:-r.amount),0),0);
-  const wealth=round(cb.cash+cb.bank+cust+stock-sup-loans),due=round(Math.max(0,wealth)*0.025),nisab=nis?nis.amount:0;
+  const ex=extra?extra.amount:0,bd=Math.min(bad?bad.amount:0,cust);
+  const wealth=round(cb.cash+cb.bank+cust-bd+stock+ex-sup-loans),goldP=gold?gold.amount:0,nisab=goldP>0?round(goldP*85):nis?nis.amount:0,below=nisab>0&&wealth<nisab,due=below?0:round(Math.max(0,wealth)*0.025);
   const start=st?st.ts:null,end=start?start+HAWL:null,days=end?Math.ceil((end-Date.now())/86400000):null;
   const state=!start?'none':days<=0?'due':days<=30?'soon':'ok';
-  return{start,end,days,state,wealth,due,nisab,below:nisab>0&&wealth<nisab,parts:{cash:cb.cash,bank:cb.bank,cust,stock,sup,loans}};
+  return{start,end,days,state,wealth,due,nisab,goldP,below,parts:{cash:cb.cash,bank:cb.bank,cust,bad:bd,stock,extra:ex,sup,loans}};
 }
 function zkCard(z,home){
   if(z.state==='none')return home?'':'<b>حدد بداية الحول</b><small>اكتب تاريخ أول ما كان معاك مال يبلغ النصاب، وهنحسبلك لما تعدي سنة هجرية (٣٥٤ يوم).</small>';
@@ -1194,18 +1197,22 @@ function zkCard(z,home){
 }
 function renderZakat(){
   const z=zakat();$('#zkCard').className='card zk '+z.state;$('#zkCard').innerHTML=zkCard(z);
-  if(z.start&&!$('#zkStart').value)$('#zkStart').value=dayKey(new Date(z.start));if(z.nisab&&!$('#zkNisab').value)$('#zkNisab').value=z.nisab;if(!$('#zpDate').value)$('#zpDate').value=today();
+  if(z.start&&!$('#zkStart').value)$('#zkStart').value=dayKey(new Date(z.start));const F=(id,v)=>{if(v&&!$(id).value)$(id).value=v};F('#zkGold',z.goldP);F('#zkExtra',z.parts.extra);F('#zkBad',z.parts.bad);if(!$('#zpDate').value)$('#zpDate').value=today();
   const P=z.parts,R=(l,v,neg)=>`<tr><td>${l}</td><td>${neg?'− ':''}${M(v)}</td></tr>`;
-  $('#zkTbl').innerHTML=`<thead><tr><th>البند</th><th>القيمة</th></tr></thead><tbody>`+R('الكاش',P.cash)+R('البنك',P.bank)+R('عند العملاء (آجل)',P.cust)+R('البضاعة بسعر البيع',P.stock)+R('علينا للموردين',P.sup,1)+R('سلف من الشركاء',P.loans,1)+
-    `<tr><td><b>المال اللي عليه زكاة</b></td><td><b>${M(z.wealth)}</b></td></tr><tr><td><b>الزكاة ٢٫٥٪</b></td><td><b>${M(z.due)}</b></td></tr></tbody>`;
+  const H=t=>`<tr><th colspan="2" style="text-align:start;background:var(--sunk)">${t}</th></tr>`;
+  $('#zkTbl').innerHTML=`<thead><tr><th>البند (زي حاسبة بيت الشارقة الخيري)</th><th>القيمة</th></tr></thead><tbody>`+
+    H('الأموال السائلة')+R('أموال سائلة (الكاش)',P.cash)+R('أموال في حسابات جارية (البنك)',P.bank)+(P.extra?R('أموال تانية برّه البرنامج',P.extra):'')+
+    H('التجارة')+R('بضائع قابلة للبيع',P.stock)+R('مبالغ مستحقة التحصيل (عند العملاء)',P.cust)+(P.bad?R('ديون معدومة',P.bad,1):'')+R('مبالغ مستحقة الدفع (للموردين)',P.sup,1)+R('قروض مقدمة من الشركاء',P.loans,1)+
+    `<tr><td><b>وعاء الزكاة</b></td><td><b>${M(z.wealth)}</b></td></tr>`+(z.nisab?`<tr><td>النصاب (٨٥ جرام دهب)</td><td>${M(z.nisab)}${z.below?' <span class="pill low">أقل من النصاب</span>':' <span class="pill ok">بلغ النصاب</span>'}</td></tr>`:'')+
+    `<tr><td><b>الزكاة ربع العشر (٢٫٥٪)</b></td><td><b>${M(z.due)}</b></td></tr></tbody>`;
   const paid=zkRows('paid').sort((a,b)=>b.ts-a.ts);
   $('#zkLog').innerHTML=`<thead><tr><th>زكاة اتدفعت</th><th>من</th><th>المبلغ</th><th></th></tr></thead><tbody>`+(paid.length?paid.map(x=>`<tr><td><span class="num">${fmtD(x.ts)}</span></td><td>${ACC[accOf(x)]}</td><td>${M(x.amount)}</td><td class="act"><button class="link del" data-zkdel="${x.id}">حذف</button></td></tr>`).join(''):'<tr><td colspan="4" class="empty">لسه مفيش زكاة متسجلة.</td></tr>')+'</tbody>';
 }
 function zkBadge(){const z=zakat();const d=$('#zkDot');d.hidden=z.state==='ok'||z.state==='none';d.className='dot '+(z.state==='due'?'due':'');return z}
 $('#zkForm').addEventListener('submit',e=>{e.preventDefault();const d=$('#zkStart').value;if(!d)return;
-  S.expenses=S.expenses.filter(x=>x.cat!=='__zakat:start'&&x.cat!=='__zakat:nisab');
+  S.expenses=S.expenses.filter(x=>!['__zakat:start','__zakat:nisab','__zakat:gold','__zakat:extra','__zakat:bad'].includes(x.cat));
   S.expenses.push({id:uid(),ts:new Date(d+'T12:00').getTime(),cat:'__zakat:start',amount:1,note:''});
-  const n=Number($('#zkNisab').value);if(n>0)S.expenses.push({id:uid(),ts:Date.now(),cat:'__zakat:nisab',amount:n,note:''});
+  [['gold','#zkGold'],['extra','#zkExtra'],['bad','#zkBad']].forEach(([k,id])=>{const n=Number($(id).value);if(n>0)S.expenses.push({id:uid(),ts:Date.now(),cat:'__zakat:'+k,amount:n,note:''})});
   save();renderZakat();zkBadge();toast('اتحفظ')});
 $('#zkPay').addEventListener('submit',e=>{e.preventDefault();const a=round(Number($('#zpAmt').value));if(!(a>0))return;const ts=ledTs($('#zpDate').value);
   S.expenses.push({id:uid(),ts,cat:'__zakat:paid',amount:a,note:tagNote('',$('#zpAcc').value)});
