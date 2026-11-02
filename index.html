@@ -363,6 +363,10 @@ tr.zrow{cursor:pointer}tr.zrow:active{background:var(--accent-soft)}.zgo{color:v
             <button data-m="credit" aria-pressed="false">آجل</button>
           </div>
         </div>
+        <div class="row" id="dateRow" hidden>
+          <label for="saleDate">تاريخ الفاتورة</label>
+          <input class="field num" id="saleDate" type="date" style="flex:1">
+        </div>
         <div class="row" id="custRow">
           <label for="custSel">العميل</label>
           <select class="field" id="custSel" style="flex:1"></select>
@@ -820,12 +824,15 @@ $('#quickCash').addEventListener('click',e=>{const b=e.target.closest('button');
 $('#discount').addEventListener('input',renderPOS);
 $('#paid').addEventListener('input',renderPOS);
 $('#clearCart').addEventListener('click',()=>{if(editing){unsell(editing,-1);S.sales.push(editing);S.sales.sort((a,b)=>a.ts-b.ts);editing=null;save();toast('رجعت الفاتورة زي ما كانت')}cart=[];resetPay();renderPOS()});
-function resetPay(){$('#discount').value=0;$('#paid').value=''}
+function resetPay(){$('#discount').value=0;$('#paid').value='';$('#saleDate').value=today()}
+/* A back-dated invoice (goods handed over earlier) keeps the current clock time on the chosen day. */
+document.addEventListener('DOMContentLoaded',()=>{if(!$('#saleDate').value)$('#saleDate').value=today()});
+function saleTs(){const d=$('#saleDate').value;if(!d||d===today())return undefined;const n=new Date(),t=new Date(d+'T12:00');t.setHours(n.getHours(),n.getMinutes(),n.getSeconds());return t.getTime()}
 $('#payBtn').addEventListener('click',()=>{
   if(!cart.length)return;
   const cust=$('#custSel').value||null;if(method==='credit'&&!cust)return toast('اختار العميل للبيع الآجل');
   const sale=editing?buildSale(cart.map(l=>({...l})),Number($('#discount').value)||0,method,$('#paid').value,S.settings,editing.no,editing.ts)
-    :buildSale(cart.map(l=>({...l})),Number($('#discount').value)||0,method,$('#paid').value,S.settings,S.next++);
+    :buildSale(cart.map(l=>({...l})),Number($('#discount').value)||0,method,$('#paid').value,S.settings,S.next++,isAdmin()?saleTs():undefined);
   if(cust){sale.party=cust;if(method==='credit'){sale.paid=0;sale.change=0}}
   if(priceMode==='whole')sale.wholesale=true;$('#custSel').value='';
   sale.items.forEach(l=>{const p=S.products.find(x=>x.id===l.pid);if(p)p.stock=round(p.stock-baseQ(l),3)});
@@ -1047,7 +1054,7 @@ $('#clearDemo').addEventListener('click',()=>{const st=S.settings;S=fresh(false)
 function applyRole(){
   const a=isAdmin();
   document.querySelectorAll('#tabs [data-admin]').forEach(b=>b.hidden=!a);
-  ['#setForm','#dataBtns','#staffCard','#setSub'].forEach(q=>$(q).hidden=!a);
+  ['#setForm','#dataBtns','#staffCard','#setSub','#dateRow'].forEach(q=>$(q).hidden=!a);
   if(!a&&['home','stock','report','acct'].includes(tab))show('pos');
 }
 // Purchases go straight into stock; a new unit cost replaces the old one.
