@@ -851,7 +851,8 @@ function showReceipt(s){
     <div class="thanks">من خير بلدنا إلى بيتك. شكرًا لزيارتكم</div>
     <div class="acts"><button class="btn wa" id="shareImg">مشاركة صورة</button><a class="btn" id="waLink" target="_blank" rel="noopener">نص واتساب</a></div>
     <div class="acts" style="margin-top:8px"><button class="btn primary" id="newSale">فاتورة جديدة</button></div>
-    ${isAdmin()&&S.sales.includes(s)?`<div class="acts" style="margin-top:8px"><button class="btn" id="editSale">تعديل الفاتورة</button><button class="btn danger" id="delSale">حذف الفاتورة</button></div>
+    ${isAdmin()&&S.sales.includes(s)?`<div class="acts" style="margin-top:8px"><button class="btn" id="editSale">تعديل الفاتورة</button><button class="btn" id="dateSale">تعديل التاريخ</button><button class="btn danger" id="delSale">حذف الفاتورة</button></div>
+    <div class="acts" id="dateAsk" hidden style="margin-top:8px;display:none;gap:6px;flex-wrap:wrap;align-items:end"><label style="flex:1">التاريخ<input class="field num" type="date" id="sDate" value="${dayKey(d)}"></label><label>الوقت<input class="field num" type="time" id="sTime" value="${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}"></label><button class="btn primary" id="dateYes">حفظ</button></div>
     <div class="acts" id="delAsk" hidden style="margin-top:8px"><span style="color:var(--bad)">متأكد؟ الكميات هترجع للمخزون.</span><button class="btn danger" id="delYes">نعم، احذف</button></div>`:''}</div></div>`;
   const txt=receiptText(s);
   $('#waLink').href='https://wa.me/?text='+encodeURIComponent(txt);
@@ -861,6 +862,10 @@ function showReceipt(s){
   $('#newSale').onclick=close;$('#ov').onclick=e=>{if(e.target.id==='ov')close()};
   if(!$('#delSale'))return;
   $('#delSale').onclick=()=>{$('#delAsk').hidden=false};
+  $('#dateSale').onclick=()=>{const a=$('#dateAsk');a.hidden=false;a.style.display='flex';$('#sDate').focus()};
+  /* The server only inserts and deletes sales, so a re-dated invoice gets a fresh id (same number) and is re-sent. */
+  $('#dateYes').onclick=()=>{const dv=$('#sDate').value,tv=$('#sTime').value||'12:00';if(!dv)return;const nt=new Date(dv+'T'+tv).getTime();if(!nt)return;
+    const ns={...s,id:uid(),ts:nt};S.sales=S.sales.filter(x=>x.id!==s.id);S.sales.push(ns);S.sales.sort((a,b)=>a.ts-b.ts);save();close();renderAll();toast('اتغير تاريخ فاتورة رقم '+s.no);showReceipt(ns)};
   $('#delYes').onclick=()=>{dropSale(s);save();close();renderAll();toast('اتحذفت فاتورة رقم '+s.no)};
   $('#editSale').onclick=()=>{
     if(editing||cart.length)return toast('خلّص الفاتورة اللي في السلة الأول');
