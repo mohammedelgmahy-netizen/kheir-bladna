@@ -727,7 +727,12 @@ $('#backBtn').addEventListener('click',()=>{if(depth>0&&history.state&&history.s
 $('#menuBtn').addEventListener('click',()=>side(true));$('#scrim').addEventListener('click',()=>side(false));
 function show(t,fromPop){tab=t;sideUi(false);
   if(!fromPop){const h=history.state,st={tab:t,k:acctKind,m:repMode};
-    if(!h||h.side||h.modal||(h.tab===t&&h.k===acctKind&&h.m===repMode))history.replaceState(st,'');else{history.pushState(st,'');depth++}}
+    // one back swipe from any page returns home: home sits under at most one tab entry
+    const H=isAdmin()?'home':'pos';
+    if(!h||h.side||h.modal||(h.tab===t&&h.k===acctKind&&h.m===repMode))history.replaceState(st,'');
+    else if(h.tab===H&&t!==H){history.pushState(st,'');depth=1}
+    else if(t===H&&depth>0){ignorePop++;history.back();depth=0}
+    else history.replaceState(st,'')}
   $('#backBtn').hidden=t===(isAdmin()?'home':'pos');
   document.querySelectorAll('#tabs button[data-tab]').forEach(b=>b.setAttribute('aria-current',b.dataset.tab===t&&(!b.dataset.k||b.dataset.k===acctKind)&&(!b.dataset.m||b.dataset.m===repMode)));
   $('#pgTitle').textContent=TITLE[t];$('#crumb').textContent=S.settings.store+' · '+TITLE[t];
