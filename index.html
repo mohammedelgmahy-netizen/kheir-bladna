@@ -522,7 +522,7 @@ tr.zrow{cursor:pointer}tr.zrow:active{background:var(--accent-soft)}.zgo{color:v
     </form>
     <div class="card settings" style="margin-top:14px">
       <b style="font-size:16.5px">البيانات</b>
-      <span style="font-size:15px;color:var(--muted)">البيانات محفوظة في Supabase باسم <b id="who"></b>، وتظهر على أي جهاز تدخل منه.</span>
+      <span style="font-size:15px;color:var(--muted)">البيانات محفوظة على السحابة باسم <b id="who"></b>، وتظهر على أي جهاز تدخل منه.</span>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <span id="dataBtns" style="display:contents"><button class="btn" id="loadDemo">تحميل بيانات تجريبية</button></span>
         <button class="btn" id="logout">تسجيل الخروج</button>
@@ -608,10 +608,10 @@ function fresh(demo){
 }
 /* Supabase storage. Project URL and anon key are entered once on this device (setup screen). */
 const CFG_KEY='kheir-pos-supabase';
-// The store's own Supabase project; a project chosen by hand in the app (custom) overrides it.
+// The store's own Supabase project; the app always uses it.
 const DEF_CFG={url:'https://lhamdnaxioxqptkylvkg.supabase.co',key:'sb_publishable_X6F5g148JSlVUz5sy0XEcw_KGNK218S'};
 let cfg=null;try{cfg=JSON.parse(localStorage.getItem(CFG_KEY)||'null')}catch(e){}
-if(!cfg||!cfg.custom)cfg=DEF_CFG;
+cfg=DEF_CFG;
 let sb=null,ownerId=null,myEmail='',role='admin',staff=[],staffRole={},isOwner=true;
 const isAdmin=()=>role==='admin';
 const synced={products:{},sales:new Set(),settings:'',parties:{},ledger:new Set(),expenses:new Set()};
@@ -1400,7 +1400,7 @@ tick();setInterval(tick,60000);
 function gate(mode,msg){
   const setup=mode==='setup';
   $('#modal').innerHTML=`<div class="overlay" style="background:var(--bg)"><form class="receipt" id="gate" dir="rtl">
-    <div class="hd"><img class="logo" src="${LOGO}" alt=""><b>${setup?'ربط Supabase':'تسجيل الدخول'}</b><div>${setup?'من Supabase: Project Settings ثم API. انسخ Project URL والمفتاح anon public.':'ادخل بحساب المتجر. البيانات محفوظة في Supabase.'}</div></div>
+    <div class="hd"><img class="logo" src="${LOGO}" alt=""><b>${setup?'ربط Supabase':'تسجيل الدخول'}</b><div>${setup?'من Supabase: Project Settings ثم API. انسخ Project URL والمفتاح anon public.':'ادخل بحساب المتجر. البيانات محفوظة على السحابة.'}</div></div>
     <div class="settings" style="padding:0">
     ${setup?`<label>Project URL<input class="field num" id="gUrl" required placeholder="https://xxxx.supabase.co" value="${esc(cfg?.url||'')}"></label>
       <label>anon public key<input class="field num" id="gKey" required value="${esc(cfg?.key||'')}"></label>`:
@@ -1408,10 +1408,9 @@ function gate(mode,msg){
       <label>كلمة المرور<input class="field num" id="gPass" type="password" required minlength="6" autocomplete="current-password"></label>`}
     <div class="change" id="gMsg">${msg?`<span class="bad">${esc(msg)}</span>`:''}</div>
     <div class="acts" style="margin-top:0"><button class="btn primary" id="gGo">${setup?'حفظ ومتابعة':'دخول'}</button>${setup?'':'<button type="button" class="btn" id="gNew">حساب جديد</button>'}</div>
-    ${setup?'':'<button type="button" class="link" id="gCfg" style="justify-self:center">تغيير مشروع Supabase</button>'}</div></form></div>`;
+    </div></form></div>`;
   const fail=m=>{$('#gMsg').innerHTML=`<span class="bad">${esc(m)}</span>`;$('#gGo').disabled=false};
   if(setup){$('#gate').onsubmit=e=>{e.preventDefault();cfg={url:$('#gUrl').value.trim().replace(/\/$/,''),key:$('#gKey').value.trim(),custom:true};try{localStorage.setItem(CFG_KEY,JSON.stringify(cfg))}catch(_){}start()};return}
-  $('#gCfg').onclick=()=>gate('setup');
   $('#gate').onsubmit=async e=>{e.preventDefault();$('#gGo').disabled=true;
     const r=await sb.auth.signInWithPassword({email:loginId($('#gMail').value),password:$('#gPass').value});
     if(r.error)return fail(/invalid|credentials/i.test(r.error.message)?'الإيميل/الرقم أو الباسورد غلط':'مقدرتش أوصل للسيرفر: '+r.error.message);enter(r.data.session)};
